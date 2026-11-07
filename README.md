@@ -4,7 +4,7 @@
 > who brings them together: a calculator and AI-drafted term sheet that show how a shared deal closes
 > the ADU financing gap.
 
-**Team:** [team name]
+**Team:** NeighborNest
 **Members:** [names]
 **Lane:** 3 Fund it (with a Lane 2 angle: a homeowner adding an ADU)
 **Built at:** Claude Impact Lab: UCI × SoCal Affordable Housing, November 7, 2026
@@ -76,8 +76,8 @@ Needs Node.js 22 (tested on 22.19.0) and npm. An Anthropic API key is optional: 
 calculator works fully and the AI panels show sample output for the default scenario.
 
 ```bash
-git clone [repo URL]
-cd [repo folder]
+git clone https://github.com/Esmith1204/NeighborNest.git
+cd NeighborNest
 npm install
 cp .env.example .env
 ```
@@ -161,5 +161,6 @@ contact any city or person. It is a prototype, not legal, financial or lending a
 
 ## License
 
-MIT, see the LICENSE file in this repo. Built on the event's
-[starter repo](https://github.com/travcjohnson/claude-impact-lab-uci).
+Code: MIT, copyright 2026 NeighborNest; see the LICENSE file in this repo. The challenge brief,
+lane descriptions and glossary text (`docs/`, `lanes/`, `templates/`) come from the event's
+[starter repo](https://github.com/travcjohnson/claude-impact-lab-uci) and stay under CC0 1.0.
