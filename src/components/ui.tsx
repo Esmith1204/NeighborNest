@@ -37,6 +37,15 @@ export function AiNote({ cached }: { cached?: boolean }) {
   );
 }
 
+/** Marks pre-written sample text so it is never mistaken for a live AI draft. */
+export function FallbackBadge() {
+  return (
+    <span className="inline-flex items-center rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-semibold text-slate-700">
+      Sample output (live AI unavailable)
+    </span>
+  );
+}
+
 export function ErrorNote({ message }: { message: string }) {
   return (
     <p role="alert" className="rounded-md bg-rose-50 px-3 py-2 text-sm text-rose-700">

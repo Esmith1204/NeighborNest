@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { RefreshCw, Users } from "lucide-react";
 import { ApiError, fetchStory } from "../lib/api";
+import { NO_FALLBACK_HINT, fallbackStory } from "../lib/fallbacks";
 import type { PersonaStory, ScenarioRequest, Story } from "../lib/types";
-import { AiNote, Card, ErrorNote, SectionTitle } from "./ui";
+import { AiNote, Card, ErrorNote, FallbackBadge, SectionTitle } from "./ui";
 
 const DEBOUNCE_MS = 800;
 
@@ -11,6 +12,7 @@ export function StoryStrip({ request }: { request: ScenarioRequest }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [cached, setCached] = useState(false);
+  const [isFallback, setIsFallback] = useState(false);
   const [refreshes, setRefreshes] = useState(0);
   const immediate = useRef(false);
   const key = JSON.stringify(request);
@@ -22,13 +24,21 @@ export function StoryStrip({ request }: { request: ScenarioRequest }) {
     const timer = setTimeout(async () => {
       setLoading(true);
       setError("");
+      const req: ScenarioRequest = JSON.parse(key);
       try {
-        const res = await fetchStory(JSON.parse(key), ac.signal);
+        const res = await fetchStory(req, ac.signal);
         setStory(res.story);
         setCached(res.cached);
+        setIsFallback(false);
       } catch (err) {
         if ((err as Error).name === "AbortError") return;
-        setError(err instanceof ApiError ? err.message : "Could not load the story.");
+        const fallback = fallbackStory(req);
+        // Never leave an older story on screen: its numbers would not match the sliders.
+        setStory(fallback);
+        setIsFallback(fallback !== null);
+        if (!fallback) {
+          setError(`${err instanceof ApiError ? err.message : "Could not load the story."} ${NO_FALLBACK_HINT}`);
+        }
       } finally {
         if (!ac.signal.aborted) setLoading(false);
       }
@@ -69,8 +79,8 @@ export function StoryStrip({ request }: { request: ScenarioRequest }) {
           <Persona name="Karl" role="Tenant" s={story.karl} />
         </div>
       )}
-      <div className="mt-3 flex flex-wrap justify-between gap-2">
-        <AiNote cached={cached} />
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+        {isFallback ? <FallbackBadge /> : story && <AiNote cached={cached} />}
         <p className="text-xs text-slate-500">Linda and Karl are fictional composite personas.</p>
       </div>
     </Card>

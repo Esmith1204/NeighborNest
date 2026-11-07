@@ -199,12 +199,12 @@ function cleanPersona(v: unknown): PersonaStory | undefined {
   const p = v as Record<string, unknown>;
   const list = (x: unknown) =>
     Array.isArray(x) && x.length > 0 && x.every((s) => typeof s === "string")
-      ? (x as string[]).slice(0, 3)
+      ? (x as string[]).map((s) => s.trim()).slice(0, 3)
       : undefined;
   const before = list(p.before);
   const after = list(p.after);
   if (typeof p.headline !== "string" || !before || !after) return undefined;
-  return { headline: p.headline, before, after };
+  return { headline: p.headline.trim(), before, after };
 }
 
 export async function generateStory(inputs: ValidatedInputs): Promise<Story> {

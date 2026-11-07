@@ -1,153 +1,165 @@
-# Claude Impact Lab: UCI × SoCal Affordable Housing
+# Co-Equity ADU
 
-**Saturday, November 7, 2026 · Paul Merage School of Business, UC Irvine**
+> For a homeowner with a backyard, a tenant who needs an affordable home, and the community partner
+> who brings them together: a calculator and AI-drafted term sheet that show how a shared deal closes
+> the ADU financing gap.
 
-One day. One equation that does not balance: what a family can afford to pay, plus public subsidy,
-plus fundraising, minus the cost to create the home. In Orange County the cost side wins by six
-figures per home. Small teams build a working prototype with Claude that helps close the gap.
+**Team:** [team name]
+**Members:** [names]
+**Lane:** 3 Fund it (with a Lane 2 angle: a homeowner adding an ADU)
+**Built at:** Claude Impact Lab: UCI × SoCal Affordable Housing, November 7, 2026
 
-Organized by Claude Community Orange County with the UCI Center for Real Estate. Sponsor: EyeOn
-Automations.
+## The problem
 
-**The challenge brief** (3 pages: the $0 equation, the three lanes, a worked example, judging): [docs/challenge-brief.pdf](docs/challenge-brief.pdf).
-The kickoff slides: [docs/kickoff-slides.pdf](docs/kickoff-slides.pdf).
+Orange County has room for more homes in its own backyards, but the money rarely lines up. A
+homeowner with a big lot may have equity but too little cash or income to qualify for an ADU loan.
+Someone who needs a home can't pay market rent. HUD's FY2026 Fair Market Rent for a studio in
+Orange County is $2,682 a month. A community partner (a nonprofit, land trust or rental-assistance
+program) can close the gap, but working out who pays what, and whether it pencils, is done by hand
+one deal at a time.
 
-**First hackathon?** You do not need a team, an idea or coding experience to start. Read
-[your first hackathon](docs/first-hackathon.md). Two minutes.
+## The people (fictional)
 
-## One link for everything
+Linda and Karl are **fictional composite personas**. No real people are described here.
 
-**<https://claudesocal.com/uci-impact-lab>**
+| | Before | After (default "Linda & Karl" scenario) |
+|---|---|---|
+| **Linda**, homeowner in Fullerton | Two kids at private universities, tuition due. A bank turned down her ADU loan: her cash and income are too tight today. | A partner's $60,000 upfront cuts her ADU loan to $160,000. After the loan payment she nets $485 a month: $291 goes to her mortgage (paid off about 4.5 years sooner) and $194 to tuition. |
+| **Karl**, living unhoused | Wants any stable home, an address for job applications and a place to receive packages. | Rents the ADU for $975 a month after a $750 partner subsidy: 33% of his income, within the 30-35% affordability guideline. Has an address. |
+| **Community partner** | Has funds but no quick way to size a deal. | Sees the gap it closes (27% of the build), the subsidy it commits, and a draft term sheet to start the conversation. |
 
-| On the hub | What it is |
-|---|---|
-| `#teams` | Register your team (by 10:00 AM) |
-| `#submit` | The submission form (due 2:30 PM) |
-| `#credits` | Your Claude API credits |
+In return for the partner's upfront cash, Linda rents below market: $1,725 a month, $957 under the
+HUD studio rent.
 
-## Bring
+## What we built
 
-- A laptop and its charger
-- A free [GitHub](https://github.com/signup) account. One per team is enough to start
-- A Claude account at [claude.ai](https://claude.ai)
-- Event credits: $100 in Claude API credits per person (API only, not Claude.ai). The claim link is on the hub at 9:15 AM. Claim using your Org ID from [console.anthropic.com](https://console.anthropic.com), not your Claude.ai ID. One claim per person. Credits are tied to the email you registered with, so people who registered on the day may not get them
+![Co-Equity ADU dashboard](docs/screenshot.jpg)
 
-Wi-Fi: UCI-guest.
+A single-page app:
 
-## The day
+- **Parcel and feasibility.** Pick one of 8 synthetic Orange County parcels and see a 0-100
+  feasibility score (yard space, zoning, rent coverage) with the breakdown.
+- **Deal sliders.** Build cost, partner upfront cash, monthly program rent (limited to the area's
+  band), share of net rent toward the mortgage, and partner rent subsidy.
+- **Metric cards and payoff chart.** Gap closed, years shaved off the mortgage, Linda's net
+  monthly income, money left for tuition, and Karl's rent as a share of income (color-coded).
+  Baseline vs accelerated mortgage payoff.
+- **Assumptions and sources panel.** Every number the app did not compute, labelled SOURCE,
+  ASSUMPTION or SYNTHETIC, with links and dates.
+- **Before / After story** drafted by Claude for Linda and Karl, refreshed as the deal changes.
+- **Co-financing term sheet** streamed live from Claude, printable or savable as PDF.
+- **Ask the ADU Navigator**: grounded Q&A about the current deal.
 
-| Time | What |
-|---|---|
-| 8:15 AM | Check-in and breakfast |
-| 9:00 AM | Kickoff in the auditorium. The lanes are revealed |
-| 9:30 AM | Anthropic build workshop, in the auditorium |
-| By 10:00 AM | Register your team on the hub (`#teams`) |
-| 10:00 AM | Go to the room your team picked |
-| Around noon | Lunch |
-| **2:30 PM** | **Submissions due.** Hub form, public repo and a demo video (30 seconds ideal). Anthropic Q&A for anyone who wants it |
-| 3:00 PM | Finalists announced. They present live in the auditorium |
-| 4:00 PM | Judges deliberate |
-| 4:15 PM | Winners and photos |
+**Demo video:** [link, or "uploaded on the hub"]
+**Live demo:** [optional]
 
-## The three lanes
+## How Claude is used
 
-Teams of up to 5, ideally one of each role: builder/engineer, creative/designer,
-communicator/presenter, organizer/facilitator. Solo is fine to start: the hub's team board shows
-teams with open seats and the roles they want. Each team picks a room on the hub (rooms fill up as teams register), goes there, and picks one
-lane together. Any lane works in any room.
+| Where | What Claude does | What keeps it honest |
+|---|---|---|
+| Term sheet (`POST /api/term-sheet`) | Streams an illustrative, non-binding term sheet in five sections via `client.messages.stream`, rendered live as markdown | Claude only sees numbers the server recomputes from validated inputs. Cut-off drafts are flagged and never cached |
+| Before / After story (`POST /api/story`) | Writes structured bullets for Linda and Karl through a `write_story` tool with a strict JSON schema | Schema-checked output; told to avoid pity language and stereotypes; under 18 words per bullet |
+| ADU Navigator (`POST /api/ask`) | Answers questions in under 120 words, grounded in the scenario numbers and `server/adu-rules.md` | Told to say what to confirm and with whom (city planning, a lender, a housing counselor) instead of guessing |
+| Guardrails (server) | The API key stays server-side (Express + dotenv). Input validation, a rate limit of 20 Claude calls per minute per IP, a cap of 400 calls per run, and a response cache | Every prompt says: use only the numbers provided; do not invent figures, lender names, laws or fees |
+| Building it | The app was built with Claude Code from `master-prompt.md` | The team reviewed the plan, the rent model and the assumptions |
 
-| | Lane | The question | Who is stuck |
-|---|---|---|---|
-| 1 | [**Find it**](lanes/1-find-it/README.md) | Where can the next affordable home go? | An acquisitions lead with no GIS team, a congregation with an underused lot, city housing staff |
-| 2 | [**Clear it**](lanes/2-clear-it/README.md) | How do we turn four years into two? | A nonprofit project manager, a small builder, a homeowner adding an ADU, a city permit tech |
-| 3 | [**Fund it**](lanes/3-fund-it/README.md) | Does it pencil, and who closes the gap? | A nonprofit finance lead, a development director, a donor, a city housing analyst |
+**The numbers never come from the AI.** The calculator (`src/lib/finance.ts`, `src/lib/feasibility.ts`)
+computes every figure; Claude only writes around them. The UI says so next to the metric cards and on
+every AI output. If live AI is unavailable, the default scenario shows pre-written sample text with a
+"Sample output (live AI unavailable)" badge, never presented as live.
 
-Each lane page has the problem, who is stuck, the open question, a few ideas to get you thinking
-(not a spec) and a list of data to start from. Build what your team thinks will help.
+Model: `claude-sonnet-5-5` (set once in `server/config.ts`).
 
-New to this field? The short [background](docs/background.md) and the [glossary](docs/glossary.md)
-cover the equation, the laws and the terms you will hear.
+## Try it
 
-## Your first 15 minutes
+Needs Node.js 22 (tested on 22.19.0) and npm. An Anthropic API key is optional: without one the
+calculator works fully and the AI panels show sample output for the default scenario.
 
-1. **Get the files.** Use this repo as a template for your team, or download it as a ZIP.
-   [Getting started](docs/getting-started.md) shows both, and three ways to work with Claude:
-   in the browser, in the desktop app, or in a terminal.
-2. **Claim your credits** from the hub (`#credits`) once the link is up at 9:15 AM.
-3. **Register your team** on the hub (`#teams`) by 10:00 AM.
-4. **Name one real user.** Write down who they are and what their day looks like before and after.
-   Then open your lane's data list and look at what is there.
-
-## Before you build
-
-1. **Start with one real person** and the problem they're stuck on. Show their before and after.
-2. **Bend the brief** if it serves the goal: more affordable homes in Southern California.
-3. **Play fair with data.** Public or provided data only. Don't overload or abuse city websites.
-   No private plans or blueprints without permission, and no personal information about real
-   tenants, buyers or residents.
-
-The full version, with the reasons, is in [ground rules](docs/ground-rules.md).
-
-## Submit by 2:30 PM
-
-One per team:
-
-- the submission form at [claudesocal.com/uci-impact-lab](https://claudesocal.com/uci-impact-lab) (`#submit`)
-- a public GitHub repo with a README (see the [repo rules](docs/submission.md#repo-rules-so-judges-can-check-it-works))
-- a demo video made with Claude's help (30 seconds is ideal, up to 2 minutes)
-
-[How to submit](docs/submission.md).
-
-## Judging
-
-Judges first shortlist from all submissions. Finalists present live in the auditorium. Each
-finalist is scored from 1 to 5 in four areas. The areas have equal weight.
-
-| Area | The question |
-|---|---|
-| **Impact** | Would a nonprofit or city use it next month to help get homes built? |
-| **Works** | Does the live demo run on real data, with sources shown? Working beats polished |
-| **Scale** | Is there a believable path to the next 100 projects? |
-| **Innovation** | Is it a new way to see or solve the problem? |
-
-Ties go to Impact.
-
-Prizes: overall 1st, 2nd and 3rd, plus a winner in each lane. A live demo is required for
-finalists. Slides alone do not place. More in [judging](docs/judging.md).
-
-## Help
-
-- **About the day, the repo or your setup:** find an organizer.
-- **About your lane:** ask in your breakout room.
-- **Stuck on setup:** ask early. Nobody should lose the morning to an install.
-- **Something looks like real personal information:** stop and tell an organizer right away.
-
-## What is in this repo
-
-```text
-README.md            this page
-CLAUDE.md            instructions Claude Code reads when you open this repo
-docs/
-  first-hackathon.md   what to expect if this is your first one
-  getting-started.md   get the files, set up Claude
-  ground-rules.md      the rules in full
-  submission.md        what to hand in and how
-  challenge-brief.pdf  the 3-page brief handed out at kickoff
-  kickoff-slides.pdf   the slides from the morning kickoff
-  judging.md           how winners are picked
-  background.md        the $0 equation and the laws, in two pages
-  glossary.md          the terms you will hear
-lanes/
-  1-find-it/     problem, ideas, scenarios.json, data/ (DATA-SOURCES.md, pathways.json)
-  2-clear-it/    problem, ideas, scenarios.json, data/ (DATA-SOURCES.md, oc-cities.json, timeline.json)
-  3-fund-it/     problem, ideas, scenarios.json, data/ (DATA-SOURCES.md, synthetic-example-deal.json)
-templates/TEAM-README.md          the README your team's repo needs
+```bash
+git clone [repo URL]
+cd [repo folder]
+npm install
+cp .env.example .env
 ```
+
+Open `.env` and set `ANTHROPIC_API_KEY=` to your key. (On Windows PowerShell, use
+`Copy-Item .env.example .env` instead of `cp`.) Then:
+
+```bash
+npm run dev
+```
+
+Open http://localhost:5173. `npm run dev` starts the API server on port 3001 and the Vite app on
+5173, which forwards `/api` to the server. `npm run build` type-checks and builds the front end.
+
+No keys are in this repo. `.env` is git-ignored.
+
+## Sources and assumptions
+
+| Item | Source or assumption | Date checked |
+|---|---|---|
+| Market rent reference, $2,682/month (studio) | SOURCE: [HUD FY2026 Fair Market Rent, Santa Ana-Anaheim-Irvine HUD Metro FMR Area (all of Orange County)](https://www.huduser.gov/portal/datasets/fmr/fmrs/FY2026_code/2026summary.odn?&year=2026&fmrtype=Final&selection_type=county&fips=0605999999). HUD has also published FY2027 FMRs, which we could not read; this figure may be out of date | 2026-11-07 |
+| Karl's income, $2,929/month | ASSUMPTION: full time (40 h × 52 weeks) at the 2026 California minimum wage of $16.90/hour ([DIR release 2025-118](https://www.dir.ca.gov/DIRNews/2025/2025-118.html)) | 2026-11-07 |
+| Program rent bands | ASSUMPTION: 62-75% (higher-cost area), 58-70% (mid), 55-66% (lower) of the HUD studio rent. City tiers are team judgment | n/a |
+| Affordable rent threshold, 35% of income | ASSUMPTION: the event brief's "around 30 to 35 percent" housing-cost guideline (`docs/background.md`), applied to rent | 2026-11-07 |
+| ADU loan, 7% over 20 years | ASSUMPTION: rounded from the Freddie Mac 30-year average of 7.18% (week of 2026-11-05) listed in `lanes/3-fund-it/data/DATA-SOURCES.md`; not checked independently | n/a |
+| Build cost range, $150,000-$350,000 | ASSUMPTION: no current, free Orange County ADU cost source was verified | n/a |
+| Mortgage years remaining, 25 | ASSUMPTION, same for every sample parcel | n/a |
+| Rent subsidy paid to the homeowner on the tenant's behalf | ASSUMPTION: program design | n/a |
+| Feasibility scoring (yard 50, zoning 30, rent 20) | ASSUMPTION: simplified demo scoring | n/a |
+| ADU rules for the Navigator | `server/adu-rules.md`: a simplified placeholder. State rules per the [HCD ADU Handbook (March 2026)](https://www.hcd.ca.gov/sites/default/files/docs/policy-and-research/adu-handbook-update.pdf), as listed in `docs/background.md`; not read in full by us | 2026-11-07 |
+| Parcels, mortgages, Linda and Karl | SYNTHETIC: made up for the demo. Real city names only | n/a |
+
+Every made-up number is labelled ASSUMPTION here and in the app's "Assumptions and sources" panel.
+
+## What is real and what is mocked
+
+| Part | Status |
+|---|---|
+| Feasibility and finance calculators | Working (deterministic, run in the browser and re-run on the server) |
+| Live Claude term sheet, story and Navigator | Working (needs an API key) |
+| Sample output when AI is unavailable | Working, default scenario only, always badged |
+| HUD market rent | Real, FY2026 (may be stale) |
+| Parcels, mortgages, people | Mocked (synthetic) |
+| Program rent bands and city tiers | Assumed |
+| ADU rules | Placeholder summary, not a rules engine |
+
+## Where it gets things wrong
+
+- **The feasibility score is a toy.** It ignores setbacks, height limits, fire and flood zones,
+  utilities, HOA rules and each city's ADU ordinance.
+- **Rents are one county-wide number with guessed area tiers.** Real rents vary by ZIP code and
+  unit size.
+- **The cash flow is simplified.** It leaves out property tax changes, insurance, maintenance,
+  vacancy and utilities. It does not model how long the subsidy lasts or what happens when it ends.
+- **Loan terms are assumed.** A real lender may not offer 7% over 20 years, or may not lend at all.
+- **Claude can still be wrong in its wording.** The metric cards are the source of truth. We would
+  not trust the term sheet or Navigator for any real decision without a lender, the city and a
+  housing counselor.
+- **Unknown:** whether any lender or partner would accept this structure. We have not asked one.
+
+## Next steps
+
+What it would take for a nonprofit or city to use this next month:
+
+1. **Real parcels.** Pull lot and building data from the OC parcel and SCAG zoning layers listed in
+   `lanes/1-find-it/data/DATA-SOURCES.md`, in place of the synthetic set.
+2. **Better rent data.** Replace the city tiers with HUD Small Area FMRs by ZIP, and move to the
+   FY2027 figures.
+3. **City rules.** Link each city's ADU checklist and fees (`lanes/2-clear-it/data/oc-cities.json`).
+4. **A real partner and lender.** Test the structure with a community land trust or a CDFI lender,
+   and model the subsidy term and an exit.
+
+With one more week we would add all of the above for two or three cities and test the term sheet
+with a practitioner.
+
+## Data and privacy
+
+This project uses only public or provided data. It contains no personal information about real
+tenants, buyers or residents. Parcels and people are synthetic. It does not file applications or
+contact any city or person. It is a prototype, not legal, financial or lending advice.
 
 ## License
 
-Code in this repo is released under the [MIT License](LICENSE). The brief, lane pages and glossary
-text are dedicated to the public domain (CC0). Third-party data, laws and documents linked here
-stay under their own terms.
-
-Teams own what they build. See [ground rules](docs/ground-rules.md).
+MIT, see the LICENSE file in this repo. Built on the event's
+[starter repo](https://github.com/travcjohnson/claude-impact-lab-uci).

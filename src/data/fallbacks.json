@@ -1,0 +1,41 @@
+{
+  "note": "Pre-written sample output for the default 'Linda & Karl' preset only. Shown when live AI is unavailable, always with a 'Sample output (live AI unavailable)' badge. Numbers match the calculator for these exact inputs.",
+  "forInputs": {
+    "parcelId": 1,
+    "buildCost": 220000,
+    "partnerUpfront": 60000,
+    "monthlyRent": 1725,
+    "rentToPaydownPct": 60,
+    "partnerRentSubsidy": 750,
+    "karlMonthlyIncome": 2929
+  },
+  "story": {
+    "linda": {
+      "headline": "Linda's backyard helps pay tuition and the mortgage",
+      "before": [
+        "Her kids attend private universities, and tuition bills keep coming.",
+        "A bank turned down her ADU loan because cash and income were tight.",
+        "She owes $420,000 on her mortgage at 4.1%."
+      ],
+      "after": [
+        "A partner's $60,000 upfront cuts her ADU loan to $160,000.",
+        "After the $1,240 loan payment, she nets $485 a month.",
+        "$291 a month goes to her mortgage, about 4.5 years sooner; $194 goes to tuition."
+      ]
+    },
+    "karl": {
+      "headline": "Karl gets a stable home and an address of his own",
+      "before": [
+        "He wants a stable home and a real address for job applications.",
+        "He earns about $2,929 a month working full time.",
+        "Studio rents in Orange County run about $2,682 a month."
+      ],
+      "after": [
+        "He pays $975 a month after the partner's $750 subsidy.",
+        "That is 33% of his income, within the 35% guideline.",
+        "He has a mailing address for job applications and deliveries."
+      ]
+    }
+  },
+  "termSheet": "# Cooperative ADU Term Sheet (Illustrative, Non-Binding)\n\n**Sample parcel 1 · Fullerton (Linda's home)** · Synthetic demo data. Items marked ASSUMPTION are team assumptions, not facts.\n\n## 1. Property Feasibility Summary\n\n- R1 zoning, 7,500 sq ft lot, 2,000 sq ft existing home, 5,500 sq ft of yard.\n- Feasibility score 90/100 (yard 50, zoning 30, rent 10): Eligible for Fast-Track Co-Financing.\n- Simplified demo scoring. Setbacks, fees and permits must be confirmed with the City of Fullerton.\n\n## 2. Capital Stack and Gap Closure\n\n| Source | Amount |\n|---|---|\n| Build cost (ASSUMPTION) | $220,000 |\n| Community partner upfront | $60,000 |\n| Homeowner ADU loan | $160,000 |\n\n- The partner closes 27% of the build cost.\n- ADU loan at 7% over 20 years (ASSUMPTION): $1,240/month. Real terms must be confirmed with a lender.\n\n## 3. Monthly Cash Flow Split\n\n- **Homeowner:** receives $1,725 program rent, pays the $1,240 loan, nets $485. Of that, $291 goes to mortgage paydown (60%) and $194 is left for tuition.\n- **Tenant:** pays $975/month, 33% of a $2,929 monthly income.\n- **Partner:** pays a $750/month subsidy to the homeowner on the tenant's behalf.\n\n## 4. Partner Contribution and Subsidy Schedule\n\n- **Upfront:** $60,000 toward the build, in exchange for a program rent of $1,725, which is $957 below the $2,682 HUD market reference.\n- **Ongoing:** $750/month rent subsidy. Duration and total commitment are not set and must be agreed by the parties.\n\n## 5. Risks and Assumptions\n\n- The HUD FY2026 market rent may be out of date; FY2027 figures were not read.\n- The program rent band, build cost and loan terms are assumptions.\n- Karl's income assumes full-time work at the 2026 state minimum wage.\n- The payoff assumes 25 years left on the mortgage; extra paydown saves about 4.5 years.\n\n*Illustrative only. Not financial or legal advice.*\n"
+}

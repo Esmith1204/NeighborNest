@@ -3,8 +3,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FileText, Printer } from "lucide-react";
 import { ApiError, streamTermSheet } from "../lib/api";
+import { NO_FALLBACK_HINT, fallbackTermSheet } from "../lib/fallbacks";
 import type { ScenarioRequest } from "../lib/types";
-import { AiNote, Card, ErrorNote, SectionTitle } from "./ui";
+import { AiNote, Card, ErrorNote, FallbackBadge, SectionTitle } from "./ui";
 
 type Status = "idle" | "streaming" | "done" | "error";
 
@@ -14,6 +15,7 @@ export function TermSheet({ request }: { request: ScenarioRequest }) {
   const [error, setError] = useState("");
   const [cached, setCached] = useState(false);
   const [truncated, setTruncated] = useState(false);
+  const [isFallback, setIsFallback] = useState(false);
   const [draftedFor, setDraftedFor] = useState("");
   const abortRef = useRef<AbortController | null>(null);
   const key = JSON.stringify(request);
@@ -27,6 +29,7 @@ export function TermSheet({ request }: { request: ScenarioRequest }) {
     setText("");
     setError("");
     setTruncated(false);
+    setIsFallback(false);
     setStatus("streaming");
     setDraftedFor(key);
     try {
@@ -36,7 +39,16 @@ export function TermSheet({ request }: { request: ScenarioRequest }) {
       setStatus("done");
     } catch (err) {
       if ((err as Error).name === "AbortError") return;
-      setError(err instanceof ApiError ? err.message : "Could not draft the term sheet.");
+      // Replaces any partial live text, so the two are never mixed.
+      const fallback = fallbackTermSheet(request);
+      if (fallback) {
+        setText(fallback);
+        setIsFallback(true);
+        setStatus("done");
+        return;
+      }
+      setText("");
+      setError(`${err instanceof ApiError ? err.message : "Could not draft the term sheet."} ${NO_FALLBACK_HINT}`);
       setStatus("error");
     }
   }
@@ -97,7 +109,7 @@ export function TermSheet({ request }: { request: ScenarioRequest }) {
       )}
       {text && (
         <div className="mt-3 space-y-1 border-t border-slate-100 pt-2">
-          <AiNote cached={cached} />
+          {isFallback ? <FallbackBadge /> : <AiNote cached={cached} />}
           <p className="text-xs text-slate-500">
             Prototype. Synthetic data and fictional personas. Not legal, financial or lending advice; confirm with a
             lender, the city and a housing counselor.
