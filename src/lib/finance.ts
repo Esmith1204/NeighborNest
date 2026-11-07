@@ -1,4 +1,4 @@
-import type { Parcel } from "./feasibility";
+import type { Parcel } from "./feasibility.js";
 
 /**
  * Slider ranges. Shared by the UI sliders and server-side validation.

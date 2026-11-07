@@ -1,13 +1,13 @@
-import { INPUT_RANGES, DEFAULT_KARL_INCOME } from "../src/lib/finance";
-import type { Parcel } from "../src/lib/feasibility";
-import { rentBandFor } from "../src/lib/rent";
-import type { ChatMessage } from "../src/lib/types";
-import { getParcel } from "./parcels";
+import { INPUT_RANGES, DEFAULT_KARL_INCOME } from "../src/lib/finance.js";
+import type { Parcel } from "../src/lib/feasibility.js";
+import { rentBandFor } from "../src/lib/rent.js";
+import type { ChatMessage } from "../src/lib/types.js";
+import { getParcel } from "./parcels.js";
 import {
   ASK_MAX_HISTORY,
   ASK_MAX_HISTORY_CHARS,
   ASK_MAX_QUESTION_CHARS,
-} from "./config";
+} from "./config.js";
 
 export interface ValidatedInputs {
   parcel: Parcel;

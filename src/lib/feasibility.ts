@@ -1,4 +1,4 @@
-import { rentBandFor } from "./rent";
+import { rentBandFor } from "./rent.js";
 
 export type Zoning = "R1" | "R2" | "Historic";
 

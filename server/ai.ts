@@ -2,14 +2,14 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import Anthropic from "@anthropic-ai/sdk";
-import { ASSUMPTIONS } from "../src/lib/assumptions";
-import { calculateFeasibility } from "../src/lib/feasibility";
-import { AFFORDABLE_RENT_SHARE, computeScenario } from "../src/lib/finance";
-import { MARKET_RENT_REFERENCE, rentBandFor } from "../src/lib/rent";
-import type { PersonaStory, Story } from "../src/lib/types";
-import { MAX_TOKENS, MODEL } from "./config";
-import type { ChatMessage } from "../src/lib/types";
-import type { ValidatedInputs } from "./validate";
+import { ASSUMPTIONS } from "../src/lib/assumptions.js";
+import { calculateFeasibility } from "../src/lib/feasibility.js";
+import { AFFORDABLE_RENT_SHARE, computeScenario } from "../src/lib/finance.js";
+import { MARKET_RENT_REFERENCE, rentBandFor } from "../src/lib/rent.js";
+import type { PersonaStory, Story } from "../src/lib/types.js";
+import { MAX_TOKENS, MODEL } from "./config.js";
+import type { ChatMessage } from "../src/lib/types.js";
+import type { ValidatedInputs } from "./validate.js";
 
 const aduRules = readFileSync(fileURLToPath(new URL("./adu-rules.md", import.meta.url)), "utf8");
 

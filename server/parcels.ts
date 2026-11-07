@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import type { Parcel } from "../src/lib/feasibility";
+import type { Parcel } from "../src/lib/feasibility.js";
 
 // The server never trusts parcel data sent by the browser; it looks parcels up here by id.
 const file = fileURLToPath(new URL("../src/data/parcels.json", import.meta.url));

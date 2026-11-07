@@ -76,8 +76,8 @@ Needs Node.js 22 (tested on 22.19.0) and npm. An Anthropic API key is optional: 
 calculator works fully and the AI panels show sample output for the default scenario.
 
 ```bash
-git clone https://github.com/Esmith1204/NeighborNest.git
-cd NeighborNest
+git clone [repo URL]
+cd [repo folder]
 npm install
 cp .env.example .env
 ```

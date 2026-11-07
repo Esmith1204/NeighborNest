@@ -1,6 +1,6 @@
 // Every number the app did not compute from a formula, with where it came from.
 // Shown in the UI's "Assumptions and sources" panel and repeated in the README.
-import { FULL_RENT_COVERAGE, MIDPOINT_COST } from "./feasibility";
+import { FULL_RENT_COVERAGE, MIDPOINT_COST } from "./feasibility.js";
 import {
   ADU_LOAN_RATE_PCT,
   ADU_LOAN_YEARS,
@@ -9,8 +9,8 @@ import {
   DEFAULT_KARL_INCOME,
   INPUT_RANGES,
   MORTGAGE_REMAINING_YEARS,
-} from "./finance";
-import { AREA_TIERS, MARKET_RENT_REFERENCE } from "./rent";
+} from "./finance.js";
+import { AREA_TIERS, MARKET_RENT_REFERENCE } from "./rent.js";
 
 export type AssumptionKind = "SOURCE" | "ASSUMPTION" | "SYNTHETIC";
 

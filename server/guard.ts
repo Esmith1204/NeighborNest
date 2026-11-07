@@ -3,7 +3,7 @@ import {
   CACHE_MAX_ENTRIES,
   GLOBAL_CLAUDE_CALL_CAP,
   RATE_LIMIT_PER_MINUTE,
-} from "./config";
+} from "./config.js";
 
 // ---- Cache: hash(route + validated inputs) -> result. In memory, oldest evicted first. ----
 const cache = new Map<string, unknown>();
