@@ -75,8 +75,8 @@ each section.
 ![NeighborNest landing page](docs/screenshot-landing.jpg)
 
 **Demo video:** [link, or "uploaded on the hub"]
-**Live demo:** <https://neighbornest-nine.vercel.app> (live AI there needs `ANTHROPIC_API_KEY` set in
-the Vercel project; without it the AI panels show labelled sample output)
+**Live demo:** <https://neighbornest-nine.vercel.app> (dashboard at
+<https://neighbornest-nine.vercel.app/dashboard>; live AI checked working on 2026-11-07)
 
 ## How Claude is used
 
@@ -164,7 +164,7 @@ sources" panel.
 | Landing page and dashboard | Working, desktop and phone |
 | Live Claude term sheet, story and Navigator | Working with an API key |
 | Sample output when AI is unavailable | Working for the Linda & Karl example only, always badged; the Navigator has no sample answers |
-| Vercel deployment | Partly working: the web app runs; live AI needs the key set in Vercel |
+| Vercel deployment | Working: web app and live AI (checked 2026-11-07) |
 | HUD market rent | Real, FY2026 (may be out of date) |
 | Photos | Real, free-license, illustrative only |
 | Parcels, mortgages, people, example deals | Mocked (synthetic) |

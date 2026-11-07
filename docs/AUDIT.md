@@ -16,6 +16,9 @@ fictional personas. Express server (`server/`) holds the key and serves three Cl
 footer on one page; no routing, no roles, no intake. Persona names are baked into types
 (`karlMonthlyIncome`), the story schema (`linda`/`karl`) and the UI labels.
 
+**Status (later on 2026-11-07):** bug 1 is fixed: `api/index.ts` + `vercel.json` now serve the API on
+Vercel, and the live site answers `/api/health` with AI configured. Bug 2 is fixed by the same rewrite.
+
 **Bugs and risks found.**
 1. **Vercel serves no API.** `POST https://neighbornest-nine.vercel.app/api/story` returns Vercel's
    `NOT_FOUND` (checked 2026-11-07). No `vercel.json`, no `api/` function. Live AI never runs in the
