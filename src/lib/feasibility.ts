@@ -55,7 +55,7 @@ export function calculateFeasibility(parcel: Parcel): Feasibility {
   const score = yardPoints + zoningPoints + rentPoints;
   const label =
     score >= 75
-      ? "Eligible for Fast-Track Co-Financing"
+      ? "Strong candidate"
       : score >= 50
         ? "Possible with conditions"
         : "Not feasible yet";
