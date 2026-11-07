@@ -4,8 +4,8 @@
     "label": "Sample parcel 1 · Fullerton (Linda's home)",
     "city": "Fullerton",
     "zoning": "R1",
-    "lotSqFt": 7500,
-    "existingHomeSqFt": 2000,
+    "lotSqFt": 3500,
+    "existingHomeSqFt": 1950,
     "currentMortgageBalance": 420000,
     "currentInterestRate": 4.1
   },

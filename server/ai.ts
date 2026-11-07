@@ -89,7 +89,7 @@ function scenarioContext(inputs: ValidatedInputs) {
       affordableRentThresholdPercentOfIncome: AFFORDABLE_RENT_SHARE * 100,
       lindaNetMonthlyIncomeUsd: Math.round(s.lindaNetMonthly),
       extraMortgagePaydownPerMonthUsd: Math.round(s.extraPaydown),
-      leftForTuitionPerMonthUsd: Math.round(s.leftForTuition),
+      leftOverForHomeownerPerMonthUsd: Math.round(s.leftForBudget),
       mortgageYearsShavedOff: s.yearsShaved,
     },
     assumptionsAndSources: ASSUMPTIONS.map((a) => ({
@@ -161,7 +161,7 @@ export async function streamTermSheet(
 
 const STORY_SYSTEM =
   "You write warm, plain-language, respectful before/after summaries for two fictional composite people, " +
-  "Linda (homeowner whose kids have left for private universities; she needs tuition money) and " +
+  "Linda (homeowner; a bank turned down her ADU loan because her cash and income are tight) and " +
   "Karl (formerly unhoused; wants a stable home and an address for jobs and deliveries). " +
   "Use only the provided numbers. Do not use pity language or stereotypes about Karl. Keep each bullet under 18 words. " +
   NO_INVENTING;

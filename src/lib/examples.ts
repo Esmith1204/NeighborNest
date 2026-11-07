@@ -1,6 +1,5 @@
 // "See an example" cards. Fictional composites for demos; NOT the user base.
-// Phase 1: they open the legacy calculator with the matching preset. Phase 3 rewires them to
-// preload the wizards and jump to results.
+// They open the dashboard with the matching example loaded.
 import type { ImageKey } from "./images";
 
 export interface Example {
@@ -15,15 +14,15 @@ export const EXAMPLES: Example[] = [
   {
     id: "linda-karl",
     title: "Linda & Karl",
-    summary: "A Fullerton homeowner with tuition bills, and a neighbor who needs a stable home and an address.",
+    summary: "A Fullerton homeowner whose bank said no to an ADU loan, and a neighbor who needs a stable home and an address.",
     image: "homeowner",
-    to: "/legacy?preset=linda-karl",
+    to: "/dashboard?example=linda-karl",
   },
   {
     id: "senior-clt",
     title: "A senior homeowner + a land trust",
     summary: "A cash-strapped senior in Buena Park partners with a community land trust.",
     image: "partner",
-    to: "/legacy?preset=senior-clt",
+    to: "/dashboard?example=senior-clt",
   },
 ];

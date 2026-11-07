@@ -1,6 +1,6 @@
 // Every number the app did not compute from a formula, with where it came from.
 // Shown in the UI's "Assumptions and sources" panel and repeated in the README.
-import { FULL_RENT_COVERAGE, MIDPOINT_COST } from "./feasibility.js";
+import { FULL_RENT_COVERAGE, MIDPOINT_COST, YARD_FULL_SQFT, YARD_MIN_SQFT } from "./feasibility.js";
 import {
   ADU_LOAN_RATE_PCT,
   ADU_LOAN_YEARS,
@@ -97,6 +97,6 @@ export const ASSUMPTIONS: Assumption[] = [
     item: "Feasibility scoring",
     value: `Yard 50, zoning 30, rent 20 points`,
     kind: "ASSUMPTION",
-    basis: `Simplified demo scoring. Rent points: a year of typical area rent vs a ${usd(MIDPOINT_COST)} build, full points at ${pct(FULL_RENT_COVERAGE)}. Real eligibility depends on local rules and permits.`,
+    basis: `Simplified demo scoring. Yard points: 0 under ${YARD_MIN_SQFT.toLocaleString("en-US")} sq ft of yard, 30 at ${YARD_MIN_SQFT.toLocaleString("en-US")} rising evenly to 50 at ${YARD_FULL_SQFT.toLocaleString("en-US")}+. Rent points: a year of typical area rent vs a ${usd(MIDPOINT_COST)} build, full points at ${pct(FULL_RENT_COVERAGE)}. Real eligibility depends on local rules and permits.`,
   },
 ];

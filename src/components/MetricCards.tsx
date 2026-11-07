@@ -17,20 +17,20 @@ export function MetricCards({ s }: { s: Scenario }) {
         <Metric label="Gap closed by partner" value={pct(s.gapClosedPct)} sub={`ADU loan ${usd(s.aduLoan)}`} />
         <Metric label="Years shaved off mortgage" value={`${s.yearsShaved}`} sub={`${usd(s.extraPaydown)}/mo extra`} />
         <Metric
-          label="Linda's net monthly income"
+          label="Homeowner's net monthly income"
           value={usd(s.lindaNetMonthly)}
           sub={`after ${usd(s.aduLoanPayment)}/mo ADU loan`}
           negative={s.lindaNetMonthly < 0}
         />
-        <Metric label="Left for tuition bills" value={`${usd(s.leftForTuition)}/mo`} />
+        <Metric label="Left for the homeowner" value={`${usd(s.leftForBudget)}/mo`} sub="after loan and extra paydown" />
         <div className={`col-span-2 rounded-xl border p-3 ${BAND_STYLES[s.karlBurdenBand]}`}>
-          <p className="text-xs font-medium opacity-80">Karl's rent</p>
+          <p className="text-xs font-medium opacity-80">Renter's rent</p>
           <p className="text-2xl font-bold tabular-nums">
             {usd(s.karlRent)}
             <span className="text-base font-semibold">/mo</span>
           </p>
           <p className="text-xs">
-            {pct(burdenPct)} of his {usd(s.karlMonthlyIncome)} income · target {pct(AFFORDABLE_RENT_SHARE * 100)} or less
+            {pct(burdenPct)} of their {usd(s.karlMonthlyIncome)} income · target {pct(AFFORDABLE_RENT_SHARE * 100)} or less
           </p>
         </div>
       </div>

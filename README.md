@@ -24,7 +24,7 @@ Linda and Karl are **fictional composite personas**. No real people are describe
 
 | | Before | After (default "Linda & Karl" scenario) |
 |---|---|---|
-| **Linda**, homeowner in Fullerton | Two kids at private universities, tuition due. A bank turned down her ADU loan: her cash and income are too tight today. | A partner's $60,000 upfront cuts her ADU loan to $160,000. After the loan payment she nets $485 a month: $291 goes to her mortgage (paid off about 4.5 years sooner) and $194 to tuition. |
+| **Linda**, homeowner in Fullerton | Has room for a backyard home, but a bank turned down her ADU loan: her cash and income are too tight today. | A partner's $60,000 upfront cuts her ADU loan to $160,000. After the loan payment she nets $485 a month: $291 goes to her mortgage (paid off about 4.5 years sooner) and $194 is hers to keep. |
 | **Karl**, living unhoused | Wants any stable home, an address for job applications and a place to receive packages. | Rents the ADU for $975 a month after a $750 partner subsidy: 33% of his income, within the 30-35% affordability guideline. Has an address. |
 | **Community partner** | Has funds but no quick way to size a deal. | Sees the gap it closes (27% of the build), the subsidy it commits, and a draft term sheet to start the conversation. |
 
@@ -35,14 +35,16 @@ HUD studio rent.
 
 ![Co-Equity ADU dashboard](docs/screenshot.jpg)
 
-A single-page app:
+Two pages: a landing page (what it is, who it is for, how it works, FAQ; the nav buttons jump to
+each section) and the **dashboard** at `/dashboard`. Linda & Karl and a second example load from a
+small "Situation example" button on the dashboard; they are not the main content.
 
 - **Parcel and feasibility.** Pick one of 8 synthetic Orange County parcels and see a 0-100
   feasibility score (yard space, zoning, rent coverage) with the breakdown.
 - **Deal sliders.** Build cost, partner upfront cash, monthly program rent (limited to the area's
   band), share of net rent toward the mortgage, and partner rent subsidy.
-- **Metric cards and payoff chart.** Gap closed, years shaved off the mortgage, Linda's net
-  monthly income, money left for tuition, and Karl's rent as a share of income (color-coded).
+- **Metric cards and payoff chart.** Gap closed, years shaved off the mortgage, the homeowner's net
+  monthly income, money left for the homeowner, and the renter's rent as a share of income.
   Baseline vs accelerated mortgage payoff.
 - **Assumptions and sources panel.** Every number the app did not compute, labelled SOURCE,
   ASSUMPTION or SYNTHETIC, with links and dates.
@@ -76,8 +78,8 @@ Needs Node.js 22 (tested on 22.19.0) and npm. An Anthropic API key is optional: 
 calculator works fully and the AI panels show sample output for the default scenario.
 
 ```bash
-git clone [repo URL]
-cd [repo folder]
+git clone https://github.com/Esmith1204/NeighborNest.git
+cd NeighborNest
 npm install
 cp .env.example .env
 ```
@@ -89,7 +91,7 @@ Open `.env` and set `ANTHROPIC_API_KEY=` to your key. (On Windows PowerShell, us
 npm run dev
 ```
 
-Open http://localhost:5173. `npm run dev` starts the API server on port 3001 and the Vite app on
+Open http://localhost:5173 (the dashboard is at http://localhost:5173/dashboard). `npm run dev` starts the API server on port 3001 and the Vite app on
 5173, which forwards `/api` to the server. `npm run build` type-checks and builds the front end.
 
 No keys are in this repo. `.env` is git-ignored.
@@ -106,7 +108,8 @@ No keys are in this repo. `.env` is git-ignored.
 | Build cost range, $150,000-$350,000 | ASSUMPTION: no current, free Orange County ADU cost source was verified | n/a |
 | Mortgage years remaining, 25 | ASSUMPTION, same for every sample parcel | n/a |
 | Rent subsidy paid to the homeowner on the tenant's behalf | ASSUMPTION: program design | n/a |
-| Feasibility scoring (yard 50, zoning 30, rent 20) | ASSUMPTION: simplified demo scoring | n/a |
+| Feasibility scoring (yard 50, zoning 30, rent 20) | ASSUMPTION: simplified demo scoring. Yard points: 0 under 800 sq ft of yard, 30 at 800 rising evenly to 50 at 1,600+ | n/a |
+| Photos | Six free-license photos from Wikimedia Commons (CC BY / CC BY-SA), downloaded once, resized, metadata stripped. Author, licence and source page for each are in `src/lib/images.ts` and the site footer | 2026-11-07 |
 | ADU rules for the Navigator | `server/adu-rules.md`: a simplified placeholder. State rules per the [HCD ADU Handbook (March 2026)](https://www.hcd.ca.gov/sites/default/files/docs/policy-and-research/adu-handbook-update.pdf), as listed in `docs/background.md`; not read in full by us | 2026-11-07 |
 | Parcels, mortgages, Linda and Karl | SYNTHETIC: made up for the demo. Real city names only | n/a |
 

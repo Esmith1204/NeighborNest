@@ -18,7 +18,7 @@ export function SectionLabel({ icon: Icon, children, dark = false }: { icon?: Lu
   return (
     <span
       className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[14px] font-medium ${
-        dark ? "border-white/30 bg-white/10 text-white backdrop-blur-md" : "border-ink/10 bg-white text-ink"
+        dark ? "border-white/70 text-white" : "border-ink/10 bg-white text-ink"
       }`}
     >
       {Icon ? <Icon className="h-3.5 w-3.5" aria-hidden /> : <span className="h-1.5 w-1.5 rounded-full bg-caramel" aria-hidden />}

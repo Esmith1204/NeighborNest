@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router";
+import { Link, useLocation } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { ButtonLink, IconButton } from "../ds/Button";
 import { EASE } from "../../lib/motion";
 
-const NAV = [
-  { to: "/how-it-works", label: "How it works" },
-  { to: "/homeowner", label: "Homeowners" },
-  { to: "/renter", label: "Renters" },
-  { to: "/partner", label: "Partners" },
-  { to: "/sources", label: "Sources" },
+/** The landing page's main sections. Each nav item scrolls to one. */
+export const SECTIONS = [
+  { id: "what", label: "What we do" },
+  { id: "roles", label: "Who it's for" },
+  { id: "how", label: "How it works" },
+  { id: "faq", label: "FAQ" },
 ];
 
 export function Logo({ className = "", light = false }: { className?: string; light?: boolean }) {
@@ -29,12 +29,33 @@ export function Logo({ className = "", light = false }: { className?: string; li
   );
 }
 
-/** Transparent over the landing hero, solid cream everywhere else (and once you scroll). */
+/** Which landing section is on screen, for the nav highlight. */
+function useActiveSection(enabled: boolean) {
+  const [active, setActive] = useState<string | null>(null);
+  useEffect(() => {
+    if (!enabled) return setActive(null);
+    const els = SECTIONS.map((s) => document.getElementById(s.id)).filter((e): e is HTMLElement => !!e);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { rootMargin: "-35% 0px -55% 0px" },
+    );
+    els.forEach((e) => io.observe(e));
+    return () => io.disconnect();
+  }, [enabled]);
+  return active;
+}
+
+/** Transparent over the landing hero, flat cream everywhere else (and once you scroll). */
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { pathname, hash } = useLocation();
-  const overHero = pathname === "/" && !scrolled && !open;
+  const onLanding = pathname === "/";
+  const overHero = onLanding && !scrolled && !open;
+  const active = useActiveSection(onLanding);
 
   useEffect(() => setOpen(false), [pathname, hash]);
   useEffect(() => {
@@ -47,34 +68,34 @@ export function Header() {
   return (
     <header
       className={`sticky top-0 z-40 transition-colors duration-300 print:hidden ${
-        overHero ? "on-dark bg-transparent" : "border-b border-ink/10 bg-paper/90 backdrop-blur-md"
+        overHero ? "on-dark bg-transparent" : "border-b border-ink/10 bg-paper"
       }`}
     >
       <div className="mx-auto flex h-[72px] max-w-[1280px] items-center justify-between gap-4 px-4 md:px-8">
         <Logo light={overHero} />
 
-        <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
-          {NAV.map((l) => (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              className={({ isActive }) =>
-                `inline-flex min-h-11 items-center rounded-full px-4 text-[16px] transition-colors duration-150 ${
-                  overHero
-                    ? `text-white hover:bg-white/15 ${isActive ? "bg-white/15" : ""}`
-                    : `text-ink/75 hover:bg-sand hover:text-ink ${isActive ? "bg-sand text-ink" : ""}`
-                }`
-              }
-            >
-              {l.label}
-            </NavLink>
-          ))}
+        <nav aria-label="Sections" className="hidden items-center gap-1 lg:flex">
+          {SECTIONS.map((s) => {
+            const on = active === s.id;
+            return (
+              <Link
+                key={s.id}
+                to={`/#${s.id}`}
+                aria-current={on ? "location" : undefined}
+                className={`inline-flex min-h-11 items-center rounded-full px-4 text-[16px] font-medium transition-colors duration-150 ${
+                  overHero ? "text-white hover:bg-white/15" : on ? "bg-ink text-paper" : "text-ink hover:bg-sand"
+                }`}
+              >
+                {s.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">
           <span className="hidden sm:block">
-            <ButtonLink to="/start" variant={overHero ? "glass" : "primary"} className="whitespace-nowrap">
-              Get started <ArrowUpRight className="h-4 w-4" aria-hidden />
+            <ButtonLink to="/dashboard" variant={overHero ? "inverse" : "primary"} className="whitespace-nowrap">
+              Dashboard <ArrowUpRight className="h-4 w-4" aria-hidden />
             </ButtonLink>
           </span>
           <span className="lg:hidden">
@@ -103,20 +124,20 @@ export function Header() {
             className="border-t border-ink/10 bg-paper lg:hidden"
           >
             <ul className="mx-auto max-w-[1280px] px-4 py-2 md:px-8">
-              {[...NAV, { to: "/#examples", label: "See an example" }].map((l, i) => (
-                <li key={l.to}>
+              {SECTIONS.map((s, i) => (
+                <li key={s.id}>
                   <Link
-                    to={l.to}
+                    to={`/#${s.id}`}
                     className="flex min-h-14 items-center justify-between border-b border-ink/10 text-2xl font-medium tracking-tight"
                   >
-                    {l.label}
+                    {s.label}
                     <span className="text-sm font-normal text-mute">{String(i + 1).padStart(2, "0")}</span>
                   </Link>
                 </li>
               ))}
               <li className="py-4">
-                <ButtonLink to="/start" className="w-full">
-                  Get started <ArrowUpRight className="h-4 w-4" aria-hidden />
+                <ButtonLink to="/dashboard" className="w-full">
+                  Dashboard <ArrowUpRight className="h-4 w-4" aria-hidden />
                 </ButtonLink>
               </li>
             </ul>

@@ -56,7 +56,7 @@ export interface Scenario {
   karlBurdenBand: BurdenBand;
   lindaNetMonthly: number;
   extraPaydown: number;
-  leftForTuition: number;
+  leftForBudget: number;
   baselineMonthlyPayment: number;
   baselinePayoffMonths: number;
   acceleratedPayoffMonths: number;
@@ -113,7 +113,7 @@ export function computeScenario(inputs: ScenarioInputs): Scenario {
   // The subsidy is paid to Linda on Karl's behalf, so total rent received is monthlyRent.
   const lindaNetMonthly = monthlyRent - aduLoanPayment;
   const extraPaydown = Math.max(0, lindaNetMonthly) * rentToPaydownFraction;
-  const leftForTuition = Math.max(0, lindaNetMonthly) - extraPaydown;
+  const leftForBudget = Math.max(0, lindaNetMonthly) - extraPaydown;
 
   const months = MORTGAGE_REMAINING_YEARS * 12;
   const baselineMonthlyPayment = amortizedPayment(
@@ -163,7 +163,7 @@ export function computeScenario(inputs: ScenarioInputs): Scenario {
     karlBurdenBand,
     lindaNetMonthly: round2(lindaNetMonthly),
     extraPaydown: round2(extraPaydown),
-    leftForTuition: round2(leftForTuition),
+    leftForBudget: round2(leftForBudget),
     baselineMonthlyPayment: round2(baselineMonthlyPayment),
     baselinePayoffMonths,
     acceleratedPayoffMonths,

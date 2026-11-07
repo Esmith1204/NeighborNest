@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
-import { ArrowRight, ArrowUpRight, BarChart3, HelpCircle, Home, Layers, Users } from "lucide-react";
+import { ArrowUpRight, BarChart3, HelpCircle, Home, Layers, Users } from "lucide-react";
 import { ArrowDot, ButtonLink } from "../components/ds/Button";
 import { Tag } from "../components/ds/Badge";
 import { Accordion } from "../components/ds/Accordion";
@@ -32,81 +32,53 @@ export default function Landing() {
   );
 }
 
-/* ---------- 1. Hero: full-bleed photo, giant faded wordmark, copy bottom-left, example card right ---------- */
+/* ---------- Hero: real photo, flat dark overlay (white text stays >= 4.5:1), giant wordmark ---------- */
 
 function Hero() {
-  const ex = EXAMPLES[0];
   return (
-    <section aria-labelledby="hero-title" className="on-dark relative -mt-[72px] overflow-hidden text-white">
-      <Photo name="hero" decorative art={false} className="absolute inset-0" />
-      {/* Scrims keep the nav and copy readable over any photo. */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/55" aria-hidden />
+    <section aria-labelledby="hero-title" className="on-dark relative -mt-[72px] overflow-hidden bg-cocoa text-white">
+      <Photo name="hero" decorative className="absolute inset-0" />
+      <div className="absolute inset-0 bg-cocoa/60" aria-hidden />
 
-      <Container className="relative flex min-h-[640px] flex-col pt-[96px] pb-10 md:h-[100svh] md:max-h-[940px] md:pb-14">
+      <Container className="relative flex min-h-[600px] flex-col pt-[104px] pb-12 md:h-[92svh] md:max-h-[880px] md:pb-16">
         <motion.p
           aria-hidden
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, ease: EASE }}
-          className="text-center text-[15.5vw] leading-[0.85] font-medium tracking-[-0.07em] text-white/55 xl:text-[198px]"
+          className="text-center text-[15.5vw] leading-[0.85] font-medium tracking-[-0.07em] text-white/80 xl:text-[198px]"
         >
           NeighborNest
         </motion.p>
 
-        <div className="mt-auto grid items-end gap-8 lg:grid-cols-12">
-          <motion.div variants={stagger(0.25)} initial="hidden" animate="show" className="lg:col-span-6">
-            <motion.p variants={fadeUp} className="mb-4">
-              <SectionLabel dark>Backyard homes · Orange County, CA</SectionLabel>
-            </motion.p>
-            <motion.h1 variants={fadeUp} id="hero-title" className="text-headline font-medium">
-              One backyard.
-              <br />
-              Two households.
-            </motion.h1>
-            <motion.p variants={fadeUp} className="mt-4 max-w-md text-[17px] text-white/90">
-              NeighborNest helps a homeowner, a neighbor who needs a home and a community partner plan a backyard
-              home together, with every number in plain language.
-            </motion.p>
-            <motion.div variants={fadeUp} className="mt-6 flex flex-wrap gap-3">
-              <ButtonLink to="/start" variant="inverse">
-                Get started <ArrowUpRight className="h-4 w-4" aria-hidden />
-              </ButtonLink>
-              <ButtonLink to="/#examples" variant="glass">
-                See an example
-              </ButtonLink>
-            </motion.div>
+        <motion.div variants={stagger(0.25)} initial="hidden" animate="show" className="mt-auto max-w-2xl pt-10">
+          <motion.div variants={fadeUp} className="mb-4">
+            <SectionLabel dark>Backyard homes · Orange County, CA</SectionLabel>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.6 }}
-            className="hidden lg:col-span-4 lg:col-start-9 lg:block"
-          >
-            <div className="rounded-[var(--radius-media)] border border-white/30 bg-white/10 p-2 backdrop-blur-md">
-              <div className="grid grid-cols-2 gap-2">
-                <Photo name="homeowner" decorative className="h-28 rounded-2xl" />
-                <Photo name="renter" decorative className="h-28 rounded-2xl" />
-              </div>
-              <div className="mt-2 rounded-2xl bg-white p-4 text-ink">
-                <p className="flex items-center justify-between gap-2 text-[17px] font-medium">
-                  Example: {ex.title}
-                  <Tag>Fictional</Tag>
-                </p>
-                <p className="mt-0.5 text-[14px] text-mute">Fullerton · sample parcel · synthetic data</p>
-                <ButtonLink to={ex.to} className="mt-3 w-full">
-                  Open the example
-                </ButtonLink>
-              </div>
-            </div>
+          <motion.h1 variants={fadeUp} id="hero-title" className="text-headline font-medium">
+            One backyard.
+            <br />
+            Two households.
+          </motion.h1>
+          <motion.p variants={fadeUp} className="mt-4 max-w-lg text-[18px] text-white">
+            NeighborNest helps a homeowner, a neighbor who needs a home and a community partner plan a backyard home
+            together, with every number in plain language.
+          </motion.p>
+          <motion.div variants={fadeUp} className="mt-7 flex flex-wrap gap-3">
+            <ButtonLink to="/dashboard" variant="inverse">
+              Open the dashboard <ArrowUpRight className="h-4 w-4" aria-hidden />
+            </ButtonLink>
+            <ButtonLink to="/#how" variant="glass">
+              How it works
+            </ButtonLink>
           </motion.div>
-        </div>
+        </motion.div>
       </Container>
     </section>
   );
 }
 
-/* ---------- 2. Statement: words fill in from light to dark as you scroll ---------- */
+/* ---------- What we do: words fill in from light to dark as you scroll ---------- */
 
 const STATEMENT =
   "We help a homeowner, a neighbor who needs a home and a community partner build one backyard home together, with numbers everyone can read and check.";
@@ -114,11 +86,11 @@ const STATEMENT =
 function Statement() {
   const ref = useRef<HTMLParagraphElement>(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.45"] });
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.5"] });
   const words = STATEMENT.split(" ");
 
   return (
-    <section aria-labelledby="what-title" className="py-20 md:py-32">
+    <section id="what" aria-labelledby="what-title" className="scroll-mt-20 py-20 md:py-28">
       <Container className="flex flex-col items-center text-center">
         <SectionLabel>What we do</SectionLabel>
         <h2 id="what-title" className="sr-only">
@@ -135,26 +107,17 @@ function Statement() {
             ),
           )}
         </p>
-        <div className="mt-12 grid w-full max-w-3xl grid-cols-3 gap-3 md:gap-4">
-          {(["homeowner", "cottage", "renter"] as ImageKey[]).map((k, i) => (
-            <Photo key={k} name={k} reveal decorative className={`aspect-[4/3] rounded-2xl ${i === 1 ? "md:-translate-y-3" : ""}`} />
-          ))}
-        </div>
       </Container>
     </section>
   );
 }
 
 function Word({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
-  const opacity = useTransform(progress, range, [0.22, 1]);
-  return (
-    <motion.span style={{ opacity }} className="inline">
-      {children}{" "}
-    </motion.span>
-  );
+  const opacity = useTransform(progress, range, [0.25, 1]);
+  return <motion.span style={{ opacity }}>{children} </motion.span>;
 }
 
-/* ---------- 3. Numbers: soft sand cards, every figure labelled with where it came from ---------- */
+/* ---------- Numbers: flat sand cards, every figure labelled with where it came from ---------- */
 
 function Numbers() {
   const stats = [
@@ -162,7 +125,7 @@ function Numbers() {
       value: usd(MARKET_RENT_REFERENCE.monthly),
       label: "HUD Fair Market Rent for a studio, Orange County, FY2026",
       tag: (
-        <a href={MARKET_RENT_REFERENCE.url} target="_blank" rel="noreferrer" className="underline underline-offset-4">
+        <a href={MARKET_RENT_REFERENCE.url} target="_blank" rel="noreferrer" className="font-medium underline underline-offset-4">
           Source: HUD
         </a>
       ),
@@ -189,7 +152,7 @@ function Numbers() {
             <dt className="sr-only">{s.label}</dt>
             <dd className="contents">
               <span className="text-5xl font-medium tracking-[-0.04em] md:text-6xl">{s.value}</span>
-              <span className="mt-3 text-[15px] text-ink/80">{s.label}</span>
+              <span className="mt-3 text-[15px] text-ink">{s.label}</span>
               <span className="mt-4 text-[13px]">{s.tag}</span>
             </dd>
           </motion.div>
@@ -199,7 +162,7 @@ function Numbers() {
   );
 }
 
-/* ---------- 4. Roles: photo cards with a frosted info panel ---------- */
+/* ---------- Who it's for: photo cards with a solid info panel ---------- */
 
 function Roles() {
   return (
@@ -215,7 +178,7 @@ function Roles() {
           one shared plan
         </>
       }
-      intro="Pick the one that sounds like you. Each gets a few short questions and a results page in plain language."
+      intro="Each person sees the same numbers from their side: what it costs, what it pays and what it asks of them."
     >
       <motion.ul
         variants={stagger()}
@@ -227,23 +190,16 @@ function Roles() {
         {ROLES.map((r, i) => {
           const m = ROLE_META[r];
           return (
-            <motion.li key={r} variants={fadeUp}>
-              <Link to={m.path} className="group relative block overflow-hidden rounded-[var(--radius-media)]">
-                <Photo name={m.image} decorative className="aspect-[4/5] w-full transition-transform duration-700 group-hover:scale-[1.03]" />
-                <span className="absolute inset-x-2 bottom-2 rounded-2xl border border-white/50 bg-paper/85 p-4 backdrop-blur-md md:p-5">
-                  <span className="flex items-center justify-between gap-3">
-                    <span className="text-2xl font-medium tracking-tight">{m.choice}</span>
-                    <ArrowDot dark>
-                      <ArrowRight className="h-4 w-4" />
-                    </ArrowDot>
-                  </span>
-                  <span className="mt-2 block text-[15px] text-ink/80">{m.blurb}</span>
-                  <span className="mt-3 flex items-center justify-between border-t border-ink/10 pt-3 text-[14px] text-mute">
-                    <span>For {m.short.toLowerCase()}</span>
-                    <span>{String(i + 1).padStart(2, "0")}</span>
-                  </span>
-                </span>
-              </Link>
+            <motion.li key={r} variants={fadeUp} className="overflow-hidden rounded-[var(--radius-media)] bg-sand">
+              <Photo name={m.image} decorative className="aspect-[4/3] w-full" />
+              <div className="p-5 md:p-6">
+                <p className="flex items-center justify-between text-[14px] text-mute">
+                  <span>For {m.short.toLowerCase()}</span>
+                  <span>{String(i + 1).padStart(2, "0")}</span>
+                </p>
+                <h3 className="mt-2 text-2xl font-medium tracking-tight">{m.choice}</h3>
+                <p className="mt-2 text-[15px] text-ink">{m.blurb}</p>
+              </div>
             </motion.li>
           );
         })}
@@ -252,13 +208,13 @@ function Roles() {
   );
 }
 
-/* ---------- 5. Approach: numbered list on the left, picture on the right ---------- */
+/* ---------- How it works: numbered list on the left, photo on the right ---------- */
 
 const STEPS: { title: string; body: string; image: ImageKey }[] = [
   {
     title: "A homeowner has room",
     body: "A backyard big enough for a small second home, but not the cash or a loan to build it alone.",
-    image: "homeowner",
+    image: "cottage",
   },
   {
     title: "A partner closes the gap",
@@ -314,7 +270,7 @@ function Approach() {
                         transition={{ duration: 0.35, ease: EASE }}
                         className="block overflow-hidden"
                       >
-                        <span className="block max-w-md pt-3 text-[16px] text-ink/80">{s.body}</span>
+                        <span className="block max-w-md pt-3 text-[16px] text-ink">{s.body}</span>
                       </motion.span>
                     )}
                   </AnimatePresence>
@@ -322,17 +278,12 @@ function Approach() {
               </li>
             );
           })}
-          <li className="px-5 pt-4 md:px-7">
-            <Link to="/how-it-works" className="inline-flex min-h-11 items-center gap-2 font-medium underline underline-offset-4">
-              Read the full method <ArrowUpRight className="h-4 w-4" aria-hidden />
-            </Link>
-          </li>
         </ol>
-        <div className="relative min-h-80 overflow-hidden rounded-[var(--radius-media)]">
+        <div className="relative min-h-72 overflow-hidden rounded-[var(--radius-media)] bg-sand-strong">
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
               key={active}
-              initial={{ opacity: 0, scale: 1.04 }}
+              initial={{ opacity: 0, scale: 1.03 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6, ease: EASE }}
@@ -347,28 +298,24 @@ function Approach() {
   );
 }
 
-/* ---------- 6. Who first: big rounded media block with an overlay line ---------- */
+/* ---------- Who it's for first: one flat block, no filler ---------- */
 
 function WhoFirst() {
   return (
     <section aria-labelledby="who-first-title" className="pb-16 md:pb-24">
       <Container>
-        <div className="on-dark relative overflow-hidden rounded-[var(--radius-media)] text-white">
-          <Photo name="cottage" reveal decorative art={false} className="h-[420px] w-full md:h-[520px]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" aria-hidden />
-          <div className="absolute inset-x-0 bottom-0 grid gap-6 p-6 md:grid-cols-12 md:items-end md:p-10">
-            <div className="md:col-span-8">
-              <SectionLabel dark>Who it's for first</SectionLabel>
-              <h2 id="who-first-title" className="mt-4 text-[clamp(1.6rem,3vw,2.6rem)] leading-tight font-medium tracking-[-0.03em]">
-                A land trust or nonprofit housing program that hands a homeowner and a renter one shared,
-                plain-language term sheet.
-              </h2>
-            </div>
-            <div className="md:col-span-4 md:justify-self-end">
-              <ButtonLink to="/partner" variant="inverse">
-                For partners <ArrowUpRight className="h-4 w-4" aria-hidden />
-              </ButtonLink>
-            </div>
+        <div className="on-dark grid gap-6 rounded-[var(--radius-media)] bg-brown p-6 text-white md:grid-cols-12 md:items-end md:p-10">
+          <div className="md:col-span-9">
+            <SectionLabel dark>Who it's for first</SectionLabel>
+            <h2 id="who-first-title" className="mt-4 text-[clamp(1.5rem,2.8vw,2.4rem)] leading-tight font-medium tracking-[-0.03em]">
+              A land trust or nonprofit housing program that hands a homeowner and a renter one shared,
+              plain-language term sheet.
+            </h2>
+          </div>
+          <div className="md:col-span-3 md:justify-self-end">
+            <ButtonLink to="/dashboard" variant="inverse">
+              Try the dashboard <ArrowUpRight className="h-4 w-4" aria-hidden />
+            </ButtonLink>
           </div>
         </div>
       </Container>
@@ -376,36 +323,37 @@ function WhoFirst() {
   );
 }
 
-/* ---------- 7. Examples ---------- */
+/* ---------- Examples: compact flat cards ---------- */
 
 function Examples() {
   return (
     <Section
       id="examples"
-      label="See an example"
+      label="Situation examples"
       icon={Home}
       align="split"
-      title="Try it with a sample scenario"
-      intro="Fictional composites, made up for the demo. They show how the flow works; they are not real people."
+      title="Start from an example"
+      intro="Fictional composites, made up for the demo. Each opens the dashboard with its numbers filled in."
       className="pt-0 md:pt-0"
     >
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2">
         {EXAMPLES.map((ex, i) => (
-          <Link key={ex.id} to={ex.to} className="group relative block overflow-hidden rounded-[var(--radius-media)]">
-            <Photo name={ex.image} decorative className="aspect-[16/10] w-full transition-transform duration-700 group-hover:scale-[1.03]" />
-            <span className="absolute inset-x-2 bottom-2 flex items-end justify-between gap-4 rounded-2xl border border-white/50 bg-paper/85 p-4 backdrop-blur-md md:p-5">
-              <span>
-                <span className="flex flex-wrap gap-2">
-                  <Tag>Example {String(i + 1).padStart(2, "0")}</Tag>
-                  <Tag>Fictional</Tag>
-                </span>
-                <span className="mt-2 block text-2xl font-medium tracking-tight">{ex.title}</span>
-                <span className="mt-1 block text-[15px] text-ink/80">{ex.summary}</span>
+          <Link
+            key={ex.id}
+            to={ex.to}
+            className="group flex items-center justify-between gap-4 rounded-[var(--radius-card)] bg-sand p-5 transition-colors duration-200 hover:bg-sand-strong md:p-6"
+          >
+            <span>
+              <span className="flex flex-wrap gap-2">
+                <Tag>Example {String(i + 1).padStart(2, "0")}</Tag>
+                <Tag>Fictional</Tag>
               </span>
-              <ArrowDot dark>
-                <ArrowUpRight className="h-4 w-4" />
-              </ArrowDot>
+              <span className="mt-2 block text-2xl font-medium tracking-tight">{ex.title}</span>
+              <span className="mt-1 block text-[15px] text-ink">{ex.summary}</span>
             </span>
+            <ArrowDot dark>
+              <ArrowUpRight className="h-4 w-4" />
+            </ArrowDot>
           </Link>
         ))}
       </div>
@@ -413,7 +361,7 @@ function Examples() {
   );
 }
 
-/* ---------- 8. FAQ: the limits, up front ---------- */
+/* ---------- FAQ: the limits, up front ---------- */
 
 function Faq() {
   return (
@@ -438,11 +386,11 @@ function Faq() {
           labelled.
         </Accordion>
         <Accordion title="Where do the numbers come from?">
-          Each rate, rule and dataset links to its source with the date we checked it, on the{" "}
-          <Link to="/sources" className="underline underline-offset-4">
-            Sources
+          Each rate, rule and dataset links to its source with the date we checked it, in the{" "}
+          <Link to="/dashboard#sources" className="font-medium underline underline-offset-4">
+            Assumptions and sources
           </Link>{" "}
-          page. Numbers we had to assume are marked "Assumption", with what they are based on.
+          panel on the dashboard. Numbers we had to assume are marked "Assumption", with what they are based on.
         </Accordion>
         <Accordion title="What happens to what I type?">
           It stays in this browser. Nothing you type is stored on a server. To draft text, the app sends only the
@@ -457,24 +405,24 @@ function Faq() {
   );
 }
 
-/* ---------- 9. Final call to action ---------- */
+/* ---------- Closing call to action ---------- */
 
 function FinalCta() {
   return (
-    <section aria-labelledby="cta-title" className="on-dark relative overflow-hidden text-white">
-      <Photo name="neighborhood" decorative art={false} className="absolute inset-0" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/35 to-black/70" aria-hidden />
-      <Container className="relative flex min-h-[520px] flex-col items-center justify-center py-20 text-center md:min-h-[620px]">
+    <section aria-labelledby="cta-title" className="on-dark relative overflow-hidden bg-cocoa text-white">
+      <Photo name="neighborhood" decorative className="absolute inset-0" />
+      <div className="absolute inset-0 bg-cocoa/60" aria-hidden />
+      <Container className="relative flex min-h-[460px] flex-col items-center justify-center py-20 text-center md:min-h-[540px]">
         <motion.div variants={stagger()} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} className="flex flex-col items-center">
           <motion.h2 variants={fadeUp} id="cta-title" className="max-w-3xl text-headline font-medium">
             Plan a backyard home, together
           </motion.h2>
-          <motion.p variants={fadeUp} className="mt-4 max-w-xl text-[17px] text-white/90">
-            A few short questions for each person, then one set of numbers everyone can see.
+          <motion.p variants={fadeUp} className="mt-4 max-w-xl text-[18px] text-white">
+            Pick a parcel, set the deal, and see one set of numbers everyone can check.
           </motion.p>
           <motion.div variants={fadeUp} className="mt-8">
-            <ButtonLink to="/start" variant="inverse">
-              Get started <ArrowUpRight className="h-4 w-4" aria-hidden />
+            <ButtonLink to="/dashboard" variant="inverse">
+              Open the dashboard <ArrowUpRight className="h-4 w-4" aria-hidden />
             </ButtonLink>
           </motion.div>
         </motion.div>

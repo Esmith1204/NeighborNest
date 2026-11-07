@@ -30,6 +30,10 @@ export interface Feasibility {
 export const FEASIBILITY_FOOTNOTE =
   "Simplified demo scoring; real eligibility depends on local rules and permits.";
 
+/** ASSUMPTION: yard size (lot minus home) where yard points start (30) and where they max out (50). */
+export const YARD_MIN_SQFT = 800;
+export const YARD_FULL_SQFT = 1_600;
+
 /** ASSUMPTION: midpoint of the $150k-$350k build cost range used for rent coverage. */
 export const MIDPOINT_COST = 250_000;
 /** ASSUMPTION: a year of rent covering 16% of the midpoint cost (about a 6-year simple payback) earns the full 20 points. */
@@ -37,7 +41,11 @@ export const FULL_RENT_COVERAGE = 0.16;
 
 export function calculateFeasibility(parcel: Parcel): Feasibility {
   const yardSqFt = parcel.lotSqFt - parcel.existingHomeSqFt;
-  const yardPoints = yardSqFt > 1200 ? 50 : yardSqFt >= 800 ? 30 : 0;
+  // ASSUMPTION: 0 points under 800 sq ft of yard; 30 at 800, rising evenly to the full 50 at 1,600+.
+  const yardPoints =
+    yardSqFt < YARD_MIN_SQFT
+      ? 0
+      : Math.round(Math.min(50, 30 + (20 * (yardSqFt - YARD_MIN_SQFT)) / (YARD_FULL_SQFT - YARD_MIN_SQFT)));
   const zoningPoints = parcel.zoning === "Historic" ? 10 : 30;
 
   // Scored on the area's typical program rent, so the score describes the parcel, not the slider.

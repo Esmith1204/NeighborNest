@@ -14,8 +14,8 @@ const VARIANTS: Record<ButtonVariant, string> = {
   secondary: "border border-ink/25 text-ink hover:border-ink hover:bg-sand",
   // On photos: white pill, dark text.
   inverse: "bg-white text-ink hover:bg-paper",
-  // On photos: frosted outline pill.
-  glass: "border border-white/45 bg-white/10 text-white backdrop-blur-md hover:bg-white hover:text-ink",
+  // On photos: flat white outline pill.
+  glass: "border border-white text-white hover:bg-white hover:text-ink",
   ghost: "px-2 text-ink underline-offset-4 hover:underline",
 };
 
@@ -57,7 +57,7 @@ export function IconButton({
       title={label}
       className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors duration-150 ${
         dark
-          ? "border-white/45 bg-white/10 text-white backdrop-blur-md hover:bg-white hover:text-ink"
+          ? "border-white text-white hover:bg-white hover:text-ink"
           : "border-ink/20 bg-white text-ink hover:bg-ink hover:text-paper"
       } ${className}`}
       {...rest}

@@ -1,14 +1,20 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router";
 import { MotionConfig } from "motion/react";
 import "./index.css";
 import { AppLayout } from "./components/layout/AppLayout";
 import Landing from "./pages/Landing";
-import Legacy from "./pages/Legacy";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Start from "./pages/Start";
 import Stub from "./pages/Stub";
+
+/** Old links (/legacy?preset=...) land on the dashboard with the same example. */
+function LegacyRedirect() {
+  const { search } = useLocation();
+  return <Navigate to={`/dashboard${search}`} replace />;
+}
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -24,7 +30,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="partner" element={<Stub title="Partner intake" />} />
             <Route path="how-it-works" element={<Stub title="How it works" />} />
             <Route path="sources" element={<Stub title="Sources" />} />
-            <Route path="legacy" element={<Legacy />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="legacy" element={<LegacyRedirect />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

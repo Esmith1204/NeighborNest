@@ -8,10 +8,10 @@ export default function Stub({ title }: { title: string }) {
       <SectionLabel>Coming next</SectionLabel>
       <h1 className="mt-5 text-headline font-medium">{title}</h1>
       <p className="mt-4 max-w-xl text-lg text-mute">
-        This part of the prototype is still being built. The full calculator is available in the meantime.
+        This part of the prototype is still being built. The dashboard has the full calculator in the meantime.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <ButtonLink to="/legacy">Open the calculator</ButtonLink>
+        <ButtonLink to="/dashboard">Open the dashboard</ButtonLink>
         <ButtonLink to="/" variant="secondary">
           Back home
         </ButtonLink>

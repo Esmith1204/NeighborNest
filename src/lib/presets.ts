@@ -4,6 +4,8 @@ import type { ScenarioRequest } from "./types";
 export interface Preset {
   id: string;
   label: string;
+  /** One line shown in the Situation example menu. Fictional composites. */
+  summary: string;
   inputs: ScenarioRequest;
 }
 
@@ -13,6 +15,7 @@ export const PRESETS: Preset[] = [
   {
     id: "linda-karl",
     label: "Linda & Karl",
+    summary: "Fullerton homeowner turned down for an ADU loan + a neighbor who needs a stable home.",
     inputs: {
       parcelId: 1,
       buildCost: 220_000,
@@ -25,7 +28,8 @@ export const PRESETS: Preset[] = [
   },
   {
     id: "senior-clt",
-    label: "Cash-strapped senior + Community Land Trust",
+    label: "Senior homeowner + land trust",
+    summary: "Buena Park senior on a tight budget partners with a community land trust.",
     inputs: {
       parcelId: 8,
       buildCost: 180_000,

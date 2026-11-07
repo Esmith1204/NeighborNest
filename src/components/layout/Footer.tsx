@@ -1,25 +1,17 @@
 import { Link } from "react-router";
 import { SyntheticChip } from "../ds/Badge";
 import { Container } from "../ds/Layout";
-import { Logo } from "./Header";
+import { IMAGES } from "../../lib/images";
+import { Logo, SECTIONS } from "./Header";
 
 const COLS = [
+  { title: "On this page", links: SECTIONS.map((s) => ({ to: `/#${s.id}`, label: s.label })) },
   {
-    title: "Start",
+    title: "Use it",
     links: [
-      { to: "/start", label: "Get started" },
-      { to: "/homeowner", label: "Homeowners" },
-      { to: "/renter", label: "Renters" },
-      { to: "/partner", label: "Partners" },
-    ],
-  },
-  {
-    title: "Learn",
-    links: [
-      { to: "/how-it-works", label: "How it works" },
-      { to: "/sources", label: "Sources" },
+      { to: "/dashboard", label: "Dashboard" },
+      { to: "/dashboard#sources", label: "Sources" },
       { to: "/#examples", label: "Examples" },
-      { to: "/#faq", label: "FAQ" },
     ],
   },
 ];
@@ -29,26 +21,26 @@ export function Footer() {
     <footer className="on-dark bg-cocoa text-paper print:hidden">
       <Container className="pt-16 pb-10">
         <div className="grid gap-12 md:grid-cols-12">
-          <div className="space-y-5 md:col-span-5">
+          <div className="space-y-5 md:col-span-4">
             <Logo light />
-            <p className="max-w-sm text-paper/70">
+            <p className="max-w-sm text-paper/75">
               One backyard, two households. A prototype from the Claude Impact Lab: UCI × SoCal Affordable Housing,
               November 7, 2026.
             </p>
             <SyntheticChip dark />
           </div>
           {COLS.map((c) => (
-            <nav key={c.title} aria-label={c.title} className="flex gap-6 md:col-span-3">
-              <p className="flex items-center gap-2 self-start pt-2.5 text-[14px] text-paper/70">
+            <nav key={c.title} aria-label={c.title} className="md:col-span-4">
+              <p className="flex items-center gap-2 text-[14px] text-paper/75">
                 <span className="h-1.5 w-1.5 rounded-full bg-caramel" aria-hidden />
                 {c.title}
               </p>
-              <ul>
+              <ul className="mt-2">
                 {c.links.map((l) => (
                   <li key={l.to}>
                     <Link
                       to={l.to}
-                      className="inline-flex min-h-11 items-center text-2xl font-medium tracking-tight text-paper/85 transition-colors hover:text-white"
+                      className="inline-flex min-h-11 items-center text-2xl font-medium tracking-tight text-paper/90 transition-colors hover:text-white"
                     >
                       {l.label}
                     </Link>
@@ -71,9 +63,27 @@ export function Footer() {
           </p>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-paper/15 pt-6 text-[14px] text-paper/65 md:flex-row md:justify-between">
-          <p>Synthetic parcels, people and partners. Numbers come from the calculator, not the AI.</p>
-          <p>Prototype only. Not legal, financial or lending advice.</p>
+        <div className="mt-10 grid gap-6 border-t border-paper/15 pt-6 text-[13px] text-paper/70 md:grid-cols-12">
+          <div className="space-y-1 md:col-span-5">
+            <p>Synthetic parcels, people and partners. Numbers come from the calculator, not the AI.</p>
+            <p>Prototype only. Not legal, financial or lending advice.</p>
+          </div>
+          <div className="md:col-span-7">
+            <p className="text-paper/85">Photos via Wikimedia Commons (checked 2026-11-07):</p>
+            <ul className="mt-1 space-y-0.5">
+              {Object.values(IMAGES).map(({ credit: c }) => (
+                <li key={c.source}>
+                  <a href={c.source} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-white">
+                    {c.title}
+                  </a>{" "}
+                  by {c.author},{" "}
+                  <a href={c.licenseUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-white">
+                    {c.license}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </Container>
     </footer>

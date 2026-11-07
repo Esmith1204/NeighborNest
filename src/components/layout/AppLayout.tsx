@@ -1,21 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useOutlet } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 
-/** Scroll to top on page change, or to #hash targets. */
+/**
+ * Scroll to top on page change, or to #hash targets. Same page: scroll now. New page: wait for the
+ * page fade so the target exists. `key` re-runs it when the same section link is clicked twice.
+ */
 function ScrollManager() {
-  const { pathname, hash } = useLocation();
+  const { pathname, hash, key } = useLocation();
+  const lastPath = useRef(pathname);
   useEffect(() => {
+    const samePage = lastPath.current === pathname;
+    lastPath.current = pathname;
     if (hash) {
-      // Wait a frame so the new page has rendered.
       const id = decodeURIComponent(hash.slice(1));
-      const t = window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ block: "start" }), 300);
+      const go = () => document.getElementById(id)?.scrollIntoView({ block: "start" });
+      if (samePage) return void go();
+      const t = window.setTimeout(go, 350);
       return () => window.clearTimeout(t);
     }
-    window.scrollTo(0, 0);
-  }, [pathname, hash]);
+    if (!samePage) window.scrollTo(0, 0);
+  }, [pathname, hash, key]);
   return null;
 }
 
