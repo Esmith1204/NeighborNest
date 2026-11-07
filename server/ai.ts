@@ -208,30 +208,31 @@ function cleanPersona(v: unknown): PersonaStory | undefined {
 }
 
 export async function generateStory(inputs: ValidatedInputs): Promise<Story> {
-  const msg = await getClient().messages.create({
-    model: MODEL,
-    max_tokens: MAX_TOKENS.story,
-    thinking: NO_THINKING,
-    system: STORY_SYSTEM,
-    tools: [WRITE_STORY_TOOL],
-    tool_choice: { type: "auto" },
-    messages: [
-      {
-        role: "user",
-        content:
-          "Call the write_story tool once with the before/after story (2-3 bullets per list) " +
-          "built from these calculator results (JSON):\n" +
-          JSON.stringify(scenarioContext(inputs), null, 2),
-      },
-    ],
-  });
+  const prompt =
+    "Call the write_story tool once with the before/after story (2-3 bullets per list) " +
+    "built from these calculator results (JSON):\n" +
+    JSON.stringify(scenarioContext(inputs), null, 2);
 
-  const block = msg.content.find((b) => b.type === "tool_use");
-  const input = block && block.type === "tool_use" ? (block.input as Record<string, unknown>) : undefined;
-  const linda = cleanPersona(input?.linda);
-  const karl = cleanPersona(input?.karl);
-  if (!linda || !karl) throw new Error("Story response was not in the expected shape.");
-  return { linda, karl };
+  // tool_choice is "auto" (see above), so now and then the model answers in prose instead of calling
+  // the tool. Try once more before giving up: a second try almost always succeeds.
+  for (let attempt = 1; ; attempt++) {
+    const msg = await getClient().messages.create({
+      model: MODEL,
+      max_tokens: MAX_TOKENS.story,
+      thinking: NO_THINKING,
+      system: STORY_SYSTEM,
+      tools: [WRITE_STORY_TOOL],
+      tool_choice: { type: "auto" },
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const block = msg.content.find((b) => b.type === "tool_use");
+    const input = block && block.type === "tool_use" ? (block.input as Record<string, unknown>) : undefined;
+    const linda = cleanPersona(input?.linda);
+    const karl = cleanPersona(input?.karl);
+    if (linda && karl) return { linda, karl };
+    if (attempt >= 2) throw new Error("Story response was not in the expected shape.");
+  }
 }
 
 // ---------- Route 3: Ask the ADU Navigator ----------
