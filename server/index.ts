@@ -1,7 +1,7 @@
 import "dotenv/config"; // loads ANTHROPIC_API_KEY from .env into process.env
 import express, { type NextFunction, type Request, type Response } from "express";
 import { aiConfigured, answerQuestion, generateStory, streamTermSheet } from "./ai";
-import type { Story } from "./ai";
+import type { Story } from "../src/lib/types";
 import { PORT } from "./config";
 import { cacheGet, cacheKey, cacheSet, reserveClaudeCall } from "./guard";
 import { validateAsk, validateInputs, type ValidatedInputs } from "./validate";
@@ -17,6 +17,7 @@ const canonical = (i: ValidatedInputs) => ({
   parcelId: i.parcel.id,
   buildCost: i.buildCost,
   partnerUpfront: i.partnerUpfront,
+  monthlyRent: i.monthlyRent,
   rentToPaydownPct: i.rentToPaydownPct,
   partnerRentSubsidy: i.partnerRentSubsidy,
   karlMonthlyIncome: i.karlMonthlyIncome,
@@ -73,10 +74,14 @@ app.post("/api/term-sheet", async (req: Request, res: Response) => {
   });
 
   try {
-    const full = await streamTermSheet(v.value, (text) => send({ type: "text", text }), abort.signal);
+    const { text: full, truncated } = await streamTermSheet(
+      v.value,
+      (text) => send({ type: "text", text }),
+      abort.signal,
+    );
     if (!abort.signal.aborted) {
-      cacheSet(key, full);
-      send({ type: "done", cached: false });
+      if (!truncated) cacheSet(key, full); // never cache a cut-off draft
+      send({ type: "done", cached: false, truncated });
     }
     res.end();
   } catch (err) {

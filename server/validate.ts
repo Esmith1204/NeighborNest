@@ -1,5 +1,7 @@
 import { INPUT_RANGES, DEFAULT_KARL_INCOME } from "../src/lib/finance";
 import type { Parcel } from "../src/lib/feasibility";
+import { rentBandFor } from "../src/lib/rent";
+import type { ChatMessage } from "../src/lib/types";
 import { getParcel } from "./parcels";
 import {
   ASK_MAX_HISTORY,
@@ -11,14 +13,10 @@ export interface ValidatedInputs {
   parcel: Parcel;
   buildCost: number;
   partnerUpfront: number;
+  monthlyRent: number;
   rentToPaydownPct: number;
   partnerRentSubsidy: number;
   karlMonthlyIncome: number;
-}
-
-export interface ChatMessage {
-  role: "user" | "assistant";
-  content: string;
 }
 
 export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
@@ -65,12 +63,20 @@ export function validateInputs(body: unknown): Result<ValidatedInputs> {
 
   if (partnerUpfront.value > buildCost.value) return fail("Partner upfront cannot exceed build cost.");
 
+  // Rent must sit inside this parcel's area band, which the server looks up itself.
+  const band = rentBandFor(parcel.city);
+  const rent = body.monthlyRent;
+  if (typeof rent !== "number" || !Number.isFinite(rent) || rent < band.min || rent > band.max) {
+    return fail(`"monthlyRent" must be a number between ${band.min} and ${band.max} for this parcel.`);
+  }
+
   return {
     ok: true,
     value: {
       parcel,
       buildCost: buildCost.value,
       partnerUpfront: partnerUpfront.value,
+      monthlyRent: rent,
       rentToPaydownPct: rentToPaydownPct.value,
       partnerRentSubsidy: partnerRentSubsidy.value,
       karlMonthlyIncome: karlMonthlyIncome.value,

@@ -1,6 +1,9 @@
 import type { Parcel } from "./feasibility";
 
-/** Slider ranges. Shared by the UI sliders and server-side validation. */
+/**
+ * Slider ranges. Shared by the UI sliders and server-side validation.
+ * Monthly rent has no fixed range: it must sit inside the parcel's area band (src/lib/rent.ts).
+ */
 export const INPUT_RANGES = {
   buildCost: { min: 150_000, max: 350_000, step: 5_000 },
   partnerUpfront: { min: 0, max: 100_000, step: 5_000 },
@@ -8,8 +11,17 @@ export const INPUT_RANGES = {
   partnerRentSubsidy: { min: 0, max: 1_000, step: 25 }, // $/month
   karlMonthlyIncome: { min: 500, max: 6_000, step: 50 }, // $/month
 } as const;
+export const RENT_STEP = 25;
 
-export const DEFAULT_KARL_INCOME = 1_800;
+/** CA statewide minimum wage for 2026 (DIR release 2025-118). */
+export const CA_MIN_WAGE_2026 = 16.9;
+/** ASSUMPTION: Karl works full time (40 h x 52 weeks) at the state minimum wage: $2,929/month. */
+export const DEFAULT_KARL_INCOME = Math.round((CA_MIN_WAGE_2026 * 40 * 52) / 12);
+
+/** ASSUMPTION: the event brief's "around 30 to 35 percent of income" guideline, applied to rent. */
+export const AFFORDABLE_RENT_SHARE = 0.35;
+/** ASSUMPTION: above half of income is shown as severe. */
+export const SEVERE_RENT_SHARE = 0.5;
 
 // Assumptions (shown in the UI's collapsible "Assumptions" panel)
 export const ADU_LOAN_RATE_PCT = 7;
@@ -20,10 +32,10 @@ export interface ScenarioInputs {
   parcel: Parcel;
   buildCost: number;
   partnerUpfront: number;
-  monthlyRent: number;
+  monthlyRent: number; // program rent, inside the parcel's area band
   rentToPaydownPct: number; // 0-100
   partnerRentSubsidy: number;
-  karlMonthlyIncome?: number; // default 1,800
+  karlMonthlyIncome?: number; // default DEFAULT_KARL_INCOME
 }
 
 export type BurdenBand = "green" | "yellow" | "red";
@@ -92,7 +104,11 @@ export function computeScenario(inputs: ScenarioInputs): Scenario {
   const karlRent = Math.max(0, monthlyRent - partnerRentSubsidy);
   const karlRentBurden = karlMonthlyIncome > 0 ? karlRent / karlMonthlyIncome : 1;
   const karlBurdenBand: BurdenBand =
-    karlRentBurden <= 0.3 ? "green" : karlRentBurden <= 0.5 ? "yellow" : "red";
+    karlRentBurden <= AFFORDABLE_RENT_SHARE
+      ? "green"
+      : karlRentBurden <= SEVERE_RENT_SHARE
+        ? "yellow"
+        : "red";
 
   // The subsidy is paid to Linda on Karl's behalf, so total rent received is monthlyRent.
   const lindaNetMonthly = monthlyRent - aduLoanPayment;

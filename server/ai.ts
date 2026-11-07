@@ -2,15 +2,14 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import Anthropic from "@anthropic-ai/sdk";
+import { ASSUMPTIONS } from "../src/lib/assumptions";
 import { calculateFeasibility } from "../src/lib/feasibility";
-import {
-  ADU_LOAN_RATE_PCT,
-  ADU_LOAN_YEARS,
-  MORTGAGE_REMAINING_YEARS,
-  computeScenario,
-} from "../src/lib/finance";
+import { AFFORDABLE_RENT_SHARE, computeScenario } from "../src/lib/finance";
+import { MARKET_RENT_REFERENCE, rentBandFor } from "../src/lib/rent";
+import type { PersonaStory, Story } from "../src/lib/types";
 import { MAX_TOKENS, MODEL } from "./config";
-import type { ChatMessage, ValidatedInputs } from "./validate";
+import type { ChatMessage } from "../src/lib/types";
+import type { ValidatedInputs } from "./validate";
 
 const aduRules = readFileSync(fileURLToPath(new URL("./adu-rules.md", import.meta.url)), "utf8");
 
@@ -31,19 +30,22 @@ const NO_INVENTING =
 function scenarioContext(inputs: ValidatedInputs) {
   const { parcel } = inputs;
   const feasibility = calculateFeasibility(parcel);
+  const band = rentBandFor(parcel.city);
   const s = computeScenario({
     parcel,
     buildCost: inputs.buildCost,
     partnerUpfront: inputs.partnerUpfront,
-    monthlyRent: parcel.estimatedAduRent,
+    monthlyRent: inputs.monthlyRent,
     rentToPaydownPct: inputs.rentToPaydownPct,
     partnerRentSubsidy: inputs.partnerRentSubsidy,
     karlMonthlyIncome: inputs.karlMonthlyIncome,
   });
 
   return {
+    dataNote:
+      "The parcel, mortgage and people are SYNTHETIC (made up for a demo). Items marked ASSUMPTION are team assumptions, not facts.",
     parcel: {
-      address: parcel.address,
+      label: parcel.label,
       city: parcel.city,
       zoning: parcel.zoning,
       lotSqFt: parcel.lotSqFt,
@@ -59,32 +61,45 @@ function scenarioContext(inputs: ValidatedInputs) {
       zoningPoints: feasibility.breakdown.zoningPoints,
       rentPoints: feasibility.breakdown.rentPoints,
     },
+    rent: {
+      programMonthlyRentUsd: inputs.monthlyRent,
+      areaTier: band.tierLabel,
+      areaProgramRentBandUsd: { min: band.min, max: band.max },
+      marketReferenceMonthlyUsd: MARKET_RENT_REFERENCE.monthly,
+      marketReferenceSource: `${MARKET_RENT_REFERENCE.label}, checked ${MARKET_RENT_REFERENCE.checked}. ${MARKET_RENT_REFERENCE.caveat}`,
+      discountBelowMarketUsd: MARKET_RENT_REFERENCE.monthly - inputs.monthlyRent,
+      howItWorks:
+        "The homeowner rents below market in exchange for the community partner's upfront cash toward the build.",
+    },
     inputs: {
       buildCostUsd: inputs.buildCost,
       partnerUpfrontUsd: inputs.partnerUpfront,
-      monthlyAduRentUsd: parcel.estimatedAduRent,
       shareOfNetRentToMortgagePaydownPercent: inputs.rentToPaydownPct,
       partnerMonthlyRentSubsidyUsd: inputs.partnerRentSubsidy,
       karlMonthlyIncomeUsd: s.karlMonthlyIncome,
     },
+    // Whole dollars and one-decimal percents, matching what the UI shows.
     results: {
       aduLoanAmountUsd: s.aduLoan,
-      aduLoanMonthlyPaymentUsd: s.aduLoanPayment,
-      gapClosedByPartnerPercent: s.gapClosedPct,
-      karlMonthlyRentAfterSubsidyUsd: s.karlRent,
+      aduLoanMonthlyPaymentUsd: Math.round(s.aduLoanPayment),
+      gapClosedByPartnerPercent: Math.round(s.gapClosedPct * 10) / 10,
+      karlMonthlyRentAfterSubsidyUsd: Math.round(s.karlRent),
       karlRentPercentOfIncome: Math.round(s.karlRentBurden * 1000) / 10,
       karlRentBurdenBand: s.karlBurdenBand,
-      lindaNetMonthlyIncomeUsd: s.lindaNetMonthly,
-      extraMortgagePaydownPerMonthUsd: s.extraPaydown,
-      leftForTuitionPerMonthUsd: s.leftForTuition,
+      affordableRentThresholdPercentOfIncome: AFFORDABLE_RENT_SHARE * 100,
+      lindaNetMonthlyIncomeUsd: Math.round(s.lindaNetMonthly),
+      extraMortgagePaydownPerMonthUsd: Math.round(s.extraPaydown),
+      leftForTuitionPerMonthUsd: Math.round(s.leftForTuition),
       mortgageYearsShavedOff: s.yearsShaved,
     },
-    assumptions: {
-      aduLoanInterestRatePercent: ADU_LOAN_RATE_PCT,
-      aduLoanTermYears: ADU_LOAN_YEARS,
-      mortgageRemainingYears: MORTGAGE_REMAINING_YEARS,
-      note: "The partner's rent subsidy is paid to the homeowner on the tenant's behalf, so total rent received equals monthlyAduRentUsd.",
-    },
+    assumptionsAndSources: ASSUMPTIONS.map((a) => ({
+      item: a.item,
+      value: a.value,
+      kind: a.kind,
+      basis: a.basis,
+      ...(a.url ? { url: a.url } : {}),
+      ...(a.checked ? { checked: a.checked } : {}),
+    })),
   };
 }
 
@@ -92,21 +107,27 @@ function scenarioContext(inputs: ValidatedInputs) {
 
 const TERM_SHEET_SYSTEM =
   "You are a housing finance analyst writing an illustrative, non-binding term sheet for a cooperative ADU financing proposal " +
-  "between a homeowner, a tenant, and a community partner. Output concise markdown (under ~500 words) with: " +
+  "between a homeowner, a tenant, and a community partner. Output concise markdown (under ~350 words) with: " +
   "1. Property Feasibility Summary, 2. Capital Stack and Gap Closure, 3. Monthly Cash Flow Split (homeowner / tenant / partner), " +
   "4. Partner Contribution and Subsidy Schedule, 5. Risks and Assumptions. " +
   "End with: 'Illustrative only. Not financial or legal advice.' " +
+  "Be brief so all five sections fit: 2-3 short bullets per section, at most one small table, whole-dollar amounts. " +
+  "In Risks and Assumptions, name the key assumptions in one line each; do not restate their sources. " +
   NO_INVENTING;
 
-/** Streams the term sheet; calls onText for each chunk and resolves with the full text. */
+/**
+ * Streams the term sheet; calls onText for each chunk and resolves with the full text and
+ * whether it was cut off by max_tokens.
+ */
 export async function streamTermSheet(
   inputs: ValidatedInputs,
   onText: (chunk: string) => void,
   signal: AbortSignal,
-): Promise<string> {
+): Promise<{ text: string; truncated: boolean }> {
   const stream = getClient().messages.stream({
     model: MODEL,
     max_tokens: MAX_TOKENS.termSheet,
+    thinking: NO_THINKING,
     system: TERM_SHEET_SYSTEM,
     messages: [
       {
@@ -129,24 +150,14 @@ export async function streamTermSheet(
   });
 
   try {
-    await stream.finalMessage();
+    const final = await stream.finalMessage();
+    return { text: full, truncated: final.stop_reason === "max_tokens" };
   } finally {
     signal.removeEventListener("abort", abort);
   }
-  return full;
 }
 
 // ---------- Route 2: story (structured output via forced tool use) ----------
-
-export interface PersonaStory {
-  headline: string;
-  before: string[];
-  after: string[];
-}
-export interface Story {
-  linda: PersonaStory;
-  karl: PersonaStory;
-}
 
 const STORY_SYSTEM =
   "You write warm, plain-language, respectful before/after summaries for two fictional composite people, " +
@@ -159,21 +170,29 @@ const personaSchema = {
   type: "object",
   properties: {
     headline: { type: "string", description: "One short headline." },
-    before: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 3 },
-    after: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 3 },
+    before: { type: "array", items: { type: "string" }, description: "2-3 short bullets." },
+    after: { type: "array", items: { type: "string" }, description: "2-3 short bullets." },
   },
   required: ["headline", "before", "after"],
+  additionalProperties: false,
 } as const;
 
+// Sonnet 5.5 rejects forced tool_choice ("tool"/"any"), so the tool is strict (schema-valid
+// input guaranteed) and the request uses tool_choice "auto" plus an instruction to call it.
 const WRITE_STORY_TOOL: Anthropic.Tool = {
   name: "write_story",
   description: "Record the before/after story for Linda and Karl.",
+  strict: true,
   input_schema: {
     type: "object",
     properties: { linda: personaSchema, karl: personaSchema },
     required: ["linda", "karl"],
+    additionalProperties: false,
   },
 };
+
+/** Thinking off: these are short drafting calls with tight max_tokens caps. */
+const NO_THINKING = { type: "between_tools" } as const;
 
 function cleanPersona(v: unknown): PersonaStory | undefined {
   if (typeof v !== "object" || v === null) return undefined;
@@ -192,14 +211,16 @@ export async function generateStory(inputs: ValidatedInputs): Promise<Story> {
   const msg = await getClient().messages.create({
     model: MODEL,
     max_tokens: MAX_TOKENS.story,
+    thinking: NO_THINKING,
     system: STORY_SYSTEM,
     tools: [WRITE_STORY_TOOL],
-    tool_choice: { type: "tool", name: "write_story" },
+    tool_choice: { type: "auto" },
     messages: [
       {
         role: "user",
         content:
-          "Write the before/after story from these calculator results (JSON):\n" +
+          "Call the write_story tool once with the before/after story (2-3 bullets per list) " +
+          "built from these calculator results (JSON):\n" +
           JSON.stringify(scenarioContext(inputs), null, 2),
       },
     ],
@@ -241,6 +262,7 @@ export async function answerQuestion(
   const msg = await getClient().messages.create({
     model: MODEL,
     max_tokens: MAX_TOKENS.ask,
+    thinking: NO_THINKING,
     system: askSystem(inputs),
     messages: [...prior, { role: "user", content: question }],
   });
@@ -249,6 +271,6 @@ export async function answerQuestion(
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("")
     .trim();
-  if (!text) throw new Error("Empty answer.");
+  if (!text || msg.stop_reason === "max_tokens") throw new Error("Empty or cut-off answer.");
   return text;
 }
