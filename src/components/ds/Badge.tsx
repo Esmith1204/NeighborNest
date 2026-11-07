@@ -7,14 +7,14 @@ const TONES: Record<Tone, { cls: string; Icon: typeof Info }> = {
   success: { cls: "border-success text-success", Icon: CheckCircle2 },
   caution: { cls: "border-caution text-caution-ink", Icon: AlertTriangle },
   risk: { cls: "border-risk text-risk", Icon: OctagonAlert },
-  neutral: { cls: "border-ink/40 text-ink", Icon: Info },
+  neutral: { cls: "border-ink/20 text-ink", Icon: Info },
 };
 
 /** Status is never colour alone: icon + text label, always. */
 export function StatusBadge({ tone, children, className = "" }: { tone: Tone; children: ReactNode; className?: string }) {
   const { cls, Icon } = TONES[tone];
   return (
-    <span className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-[13px] font-medium ${cls} ${className}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-full border bg-white px-3 py-1 text-[13px] font-medium ${cls} ${className}`}>
       <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
       {children}
     </span>
@@ -25,8 +25,8 @@ export function StatusBadge({ tone, children, className = "" }: { tone: Tone; ch
 export function Tag({ children, dark = false }: { children: ReactNode; dark?: boolean }) {
   return (
     <span
-      className={`inline-flex items-center border px-1.5 py-0.5 text-[11px] font-medium tracking-widest uppercase ${
-        dark ? "border-white/60 text-white" : "border-ink/40 text-ink"
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[12px] font-medium ${
+        dark ? "border-white/40 text-white" : "border-ink/15 bg-white text-ink"
       }`}
     >
       {children}
@@ -41,7 +41,7 @@ export function SyntheticChip({ dark = false }: { dark?: boolean }) {
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[13px] ${
-        dark ? "border-white/60 text-white" : "border-ink/40 text-ink"
+        dark ? "border-white/40 text-white" : "border-ink/15 bg-white text-ink"
       }`}
     >
       <Database className="h-3.5 w-3.5" aria-hidden />

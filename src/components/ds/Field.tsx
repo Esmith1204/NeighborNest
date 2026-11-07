@@ -2,7 +2,7 @@ import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react
 import { AlertTriangle } from "lucide-react";
 
 const CONTROL =
-  "min-h-11 w-full border border-ink/40 bg-white px-3 py-2 text-[16px] text-ink placeholder:text-mist " +
+  "min-h-11 w-full rounded-xl border border-ink/20 bg-white px-3 py-2 text-[16px] text-ink placeholder:text-mist " +
   "hover:border-ink focus:border-ink focus:outline-2 focus:outline-offset-2 focus:outline-ink aria-[invalid=true]:border-risk";
 
 /** Label + control + hint + plain-language error, wired with ids for screen readers. */
@@ -114,8 +114,8 @@ export function ChoiceGroup<T extends string>({
           return (
             <label
               key={o.value}
-              className={`flex min-h-11 cursor-pointer items-start gap-3 border px-3.5 py-3 transition-colors duration-150 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink ${
-                on ? "border-ink bg-ink text-white" : "border-ink/30 bg-white hover:border-ink"
+              className={`flex min-h-11 cursor-pointer items-start gap-3 rounded-xl border px-4 py-3 transition-colors duration-150 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink ${
+                on ? "border-ink bg-ink text-paper" : "border-ink/15 bg-white hover:border-ink/60"
               }`}
             >
               <input

@@ -1,39 +1,65 @@
 @import "tailwindcss";
 
 /*
- * NeighborNest design tokens (Tailwind v4: @theme is the config; every token is also a CSS variable).
- * Monochrome by default. Status colours are only for meaning and always ship with an icon + text.
- * Contrast notes (WCAG 2.2 AA): `mist` (#8A8A8A) is 3.4:1 on paper, so it is for hairlines, large
- * text and decoration only; small secondary text uses `mute`. `caution` (#B07A1F) is for icons and
- * borders; caution text uses `caution-ink`.
+ * NeighborNest design tokens (Tailwind v4: @theme is the config; each token is also a CSS variable).
+ * Warm, quiet palette: espresso ink on cream, sand surfaces, one brown accent.
+ * Contrast (WCAG 2.2 AA, checked 2026-11-07): ink 14.6:1, mute 5.9:1, brown 6.1:1 on paper;
+ * all >= 4.8:1 on sand. caramel (2.9:1) and mist (2.5:1) are decoration only, never text.
+ * Status colours are only for meaning and always ship with an icon + text label.
  */
 @theme {
-  --color-ink: #0a0a0a;
-  --color-paper: #fafafa;
+  --color-ink: #2a1d15;
+  --color-paper: #f7f1ea;
+  --color-sand: #ede3d7;
+  --color-sand-strong: #e2d4c3;
   --color-white: #ffffff;
-  --color-mist: #8a8a8a;
-  --color-mute: #595959;
-  --color-line: #0a0a0a;
+  --color-mute: #6b5a4d;
+  --color-mist: #a8978a;
+  --color-brown: #7a5236;
+  --color-caramel: #b9845a;
+  --color-cocoa: #1c130e;
   --color-success: #2f6b4f;
   --color-caution: #b07a1f;
   --color-caution-ink: #85590f;
   --color-risk: #a33a2f;
 
-  --font-sans: "Jost", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Legacy calculator (/legacy) uses slate + emerald classes: remapped to the warm palette so
+     every page matches until those components are restyled. */
+  --color-slate-50: #f7f1ea;
+  --color-slate-100: #efe6dc;
+  --color-slate-200: #e2d4c3;
+  --color-slate-300: #cdbba7;
+  --color-slate-400: #a8978a;
+  --color-slate-500: #6b5a4d;
+  --color-slate-600: #5c4b3f;
+  --color-slate-700: #46372d;
+  --color-slate-800: #34271f;
+  --color-slate-900: #2a1d15;
+  --color-emerald-50: #f3e9de;
+  --color-emerald-100: #ead9c6;
+  --color-emerald-200: #dcc2a5;
+  --color-emerald-300: #c9a47f;
+  --color-emerald-500: #9b6b45;
+  --color-emerald-600: #7a5236;
+  --color-emerald-700: #6a4630;
+  --color-emerald-800: #553825;
 
-  --text-display: clamp(3rem, 9vw, 8rem);
-  --text-display--line-height: 0.92;
-  --text-display--letter-spacing: -0.035em;
-  --text-headline: clamp(2rem, 4.5vw, 3.75rem);
-  --text-headline--line-height: 1;
-  --text-headline--letter-spacing: -0.02em;
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --text-display: clamp(3rem, 8vw, 7.5rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.045em;
+  --text-headline: clamp(2.1rem, 4.4vw, 3.6rem);
+  --text-headline--line-height: 1.04;
+  --text-headline--letter-spacing: -0.035em;
+
+  --radius-card: 1.25rem;
+  --radius-media: 1.5rem;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :root {
-  --hairline: 1px solid var(--color-ink);
-  --hairline-dark: 1px solid rgb(255 255 255 / 0.6);
   color-scheme: light;
 }
 
@@ -47,6 +73,7 @@ body {
   font-family: var(--font-sans);
   font-size: 17px;
   font-weight: 400;
+  letter-spacing: -0.01em;
   line-height: 1.55;
   /* Tabular numerals everywhere, so figures line up and do not jitter while counting. */
   font-variant-numeric: tabular-nums;
@@ -82,7 +109,7 @@ body {
 
 /* Skeleton shimmer for loading states (static under reduced motion). */
 .skeleton {
-  background: linear-gradient(90deg, #ececec 0%, #f6f6f6 50%, #ececec 100%);
+  background: linear-gradient(90deg, #ede3d7 0%, #f7f1ea 50%, #ede3d7 100%);
   background-size: 200% 100%;
   animation: skeleton 1.4s ease-in-out infinite;
 }
@@ -149,7 +176,7 @@ body {
 }
 .md th,
 .md td {
-  border-bottom: 1px solid #d4d4d4;
+  border-bottom: 1px solid #e2d4c3;
   padding: 0.4rem 0.5rem 0.4rem 0;
   text-align: left;
 }
@@ -159,7 +186,7 @@ body {
 }
 .md hr {
   margin: 1rem 0;
-  border-color: #d4d4d4;
+  border-color: #e2d4c3;
 }
 
 @media print {

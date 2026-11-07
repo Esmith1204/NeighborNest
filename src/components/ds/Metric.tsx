@@ -54,9 +54,9 @@ export function MetricCard({
   className?: string;
 }) {
   return (
-    <div className={`flex flex-col border-t border-ink pt-4 ${className}`}>
-      <p className="text-[13px] tracking-widest text-mute uppercase">{label}</p>
-      <p className={`mt-2 text-4xl font-light md:text-5xl ${tone === "risk" ? "text-risk" : ""}`} aria-live="polite">
+    <div className={`flex flex-col rounded-[var(--radius-card)] bg-sand p-5 md:p-6 ${className}`}>
+      <p className="text-[14px] text-mute">{label}</p>
+      <p className={`mt-2 text-4xl font-medium tracking-tight md:text-5xl ${tone === "risk" ? "text-risk" : ""}`} aria-live="polite">
         <CountUp value={value} format={format} />
         {unit && <span className="ml-1 text-lg font-normal text-mute">{unit}</span>}
       </p>

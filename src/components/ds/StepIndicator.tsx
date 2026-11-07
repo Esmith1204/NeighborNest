@@ -19,7 +19,7 @@ export function StepIndicator({
   return (
     <nav aria-label="Progress" className="border-b border-ink pb-5">
       <div className="flex items-end justify-between gap-6">
-        <p className="flex items-baseline gap-2 text-5xl font-light md:text-6xl" aria-hidden>
+        <p className="flex items-baseline gap-2 text-5xl font-medium tracking-tight md:text-6xl" aria-hidden>
           <span className="relative inline-block overflow-hidden">
             <AnimatePresence mode="popLayout" initial={false}>
               <motion.span
@@ -39,7 +39,7 @@ export function StepIndicator({
         <p className="sr-only" aria-live="polite">
           Step {current + 1} of {total}: {steps[current]}
         </p>
-        <p className="hidden text-right text-sm tracking-widest text-mute uppercase sm:block" aria-hidden>
+        <p className="hidden text-right text-[15px] text-mute sm:block" aria-hidden>
           {steps[current]}
         </p>
       </div>

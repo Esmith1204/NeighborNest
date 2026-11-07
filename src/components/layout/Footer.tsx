@@ -3,60 +3,79 @@ import { SyntheticChip } from "../ds/Badge";
 import { Container } from "../ds/Layout";
 import { Logo } from "./Header";
 
+const COLS = [
+  {
+    title: "Start",
+    links: [
+      { to: "/start", label: "Get started" },
+      { to: "/homeowner", label: "Homeowners" },
+      { to: "/renter", label: "Renters" },
+      { to: "/partner", label: "Partners" },
+    ],
+  },
+  {
+    title: "Learn",
+    links: [
+      { to: "/how-it-works", label: "How it works" },
+      { to: "/sources", label: "Sources" },
+      { to: "/#examples", label: "Examples" },
+      { to: "/#faq", label: "FAQ" },
+    ],
+  },
+];
+
 export function Footer() {
   return (
-    <footer className="on-dark border-t border-ink bg-ink text-white print:hidden">
-      <Container className="py-14">
-        <div className="grid gap-10 md:grid-cols-12">
-          <div className="space-y-4 md:col-span-5">
-            <Logo />
-            <p className="max-w-sm text-white/80">
-              One backyard, two households. A prototype built at the Claude Impact Lab: UCI × SoCal Affordable
-              Housing, November 7, 2026.
+    <footer className="on-dark bg-cocoa text-paper print:hidden">
+      <Container className="pt-16 pb-10">
+        <div className="grid gap-12 md:grid-cols-12">
+          <div className="space-y-5 md:col-span-5">
+            <Logo light />
+            <p className="max-w-sm text-paper/70">
+              One backyard, two households. A prototype from the Claude Impact Lab: UCI × SoCal Affordable Housing,
+              November 7, 2026.
             </p>
             <SyntheticChip dark />
           </div>
-          <FooterList
-            title="Start"
-            links={[
-              { to: "/start", label: "Get started" },
-              { to: "/homeowner", label: "For homeowners" },
-              { to: "/renter", label: "For renters" },
-              { to: "/partner", label: "For partners" },
-            ]}
-          />
-          <FooterList
-            title="Learn"
-            links={[
-              { to: "/how-it-works", label: "How it works" },
-              { to: "/sources", label: "Sources and data" },
-              { to: "/#examples", label: "See an example" },
-            ]}
-          />
+          {COLS.map((c) => (
+            <nav key={c.title} aria-label={c.title} className="flex gap-6 md:col-span-3">
+              <p className="flex items-center gap-2 self-start pt-2.5 text-[14px] text-paper/70">
+                <span className="h-1.5 w-1.5 rounded-full bg-caramel" aria-hidden />
+                {c.title}
+              </p>
+              <ul>
+                {c.links.map((l) => (
+                  <li key={l.to}>
+                    <Link
+                      to={l.to}
+                      className="inline-flex min-h-11 items-center text-2xl font-medium tracking-tight text-paper/85 transition-colors hover:text-white"
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
         </div>
-        <div className="mt-12 space-y-1.5 border-t border-white/60 pt-6 text-[14px] text-white/75">
-          <p>All parcels, people and partners in this app are synthetic. No real addresses, owners or applicants.</p>
-          <p>Numbers come from the calculator, not the AI. Claude drafts text from those numbers.</p>
-          <p>Prototype only. Not legal, financial or lending advice: talk to a lender, your city and a housing counselor.</p>
+
+        {/* Giant boxed wordmark with corner brackets. */}
+        <div className="relative mt-16 px-3 py-6 md:px-6 md:py-10" aria-hidden>
+          {["top-0 left-0 border-t border-l", "top-0 right-0 border-t border-r", "bottom-0 left-0 border-b border-l", "bottom-0 right-0 border-b border-r"].map(
+            (c) => (
+              <span key={c} className={`absolute h-10 w-10 border-paper/40 md:h-16 md:w-16 ${c}`} />
+            ),
+          )}
+          <p className="text-center text-[13.5vw] leading-none font-medium tracking-[-0.065em] text-paper xl:text-[168px]">
+            NeighborNest
+          </p>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-2 border-t border-paper/15 pt-6 text-[14px] text-paper/65 md:flex-row md:justify-between">
+          <p>Synthetic parcels, people and partners. Numbers come from the calculator, not the AI.</p>
+          <p>Prototype only. Not legal, financial or lending advice.</p>
         </div>
       </Container>
     </footer>
-  );
-}
-
-function FooterList({ title, links }: { title: string; links: { to: string; label: string }[] }) {
-  return (
-    <nav aria-label={title} className="md:col-span-3">
-      <p className="text-sm tracking-widest text-white/70 uppercase">{title}</p>
-      <ul className="mt-3">
-        {links.map((l) => (
-          <li key={l.to}>
-            <Link to={l.to} className="inline-flex min-h-11 items-center text-lg font-light hover:underline underline-offset-4">
-              {l.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
   );
 }

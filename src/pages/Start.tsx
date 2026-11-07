@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import { Container } from "../components/ds/Layout";
+import { Container, SectionLabel } from "../components/ds/Layout";
 import { Photo } from "../components/ds/Photo";
 import { fadeUp, stagger } from "../lib/motion";
 import { loadRole, ROLE_META, ROLES, saveRole, type Role } from "../lib/roles";
@@ -20,10 +20,10 @@ export default function Start() {
   return (
     <Container className="py-12 md:py-20">
       <motion.div variants={stagger()} initial="hidden" animate="show">
-        <motion.p variants={fadeUp} className="text-sm tracking-widest text-mute uppercase">
-          Get started
-        </motion.p>
-        <motion.h1 variants={fadeUp} className="mt-4 max-w-4xl text-headline font-light">
+        <motion.div variants={fadeUp}>
+          <SectionLabel>Get started</SectionLabel>
+        </motion.div>
+        <motion.h1 variants={fadeUp} className="mt-5 max-w-4xl text-headline font-medium">
           Which of these sounds like you?
         </motion.h1>
         <motion.p variants={fadeUp} className="mt-4 max-w-2xl text-lg text-mute">
@@ -39,19 +39,19 @@ export default function Start() {
                 <button
                   type="button"
                   onClick={() => choose(r)}
-                  className="group flex h-full w-full flex-col border border-ink/25 bg-white text-left transition-colors duration-200 hover:border-ink hover:bg-ink hover:text-white focus-visible:bg-ink focus-visible:text-white"
+                  className="group flex h-full w-full flex-col overflow-hidden rounded-[var(--radius-media)] bg-white p-2 text-left ring-1 ring-ink/8 transition-colors duration-200 hover:bg-ink hover:text-paper focus-visible:bg-ink focus-visible:text-paper"
                 >
-                  <Photo name={m.image} decorative className="aspect-[4/3] w-full" />
-                  <span className="flex flex-1 flex-col justify-between gap-6 p-6">
+                  <Photo name={m.image} decorative className="aspect-[4/3] w-full rounded-2xl" />
+                  <span className="flex flex-1 flex-col justify-between gap-6 p-4 md:p-5">
                     <span>
-                      <span className="flex items-center justify-between text-sm tracking-widest opacity-70">
-                        ({String(i + 1).padStart(2, "0")})
+                      <span className="flex items-center justify-between text-sm opacity-70">
+                        {String(i + 1).padStart(2, "0")}
                         {isRemembered && <span className="normal-case tracking-normal">Your last choice</span>}
                       </span>
-                      <span className="mt-3 block text-3xl font-light">{m.choice}</span>
+                      <span className="mt-3 block text-3xl font-medium tracking-tight">{m.choice}</span>
                       <span className="mt-2 block text-[15px] opacity-80">{m.blurb}</span>
                     </span>
-                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-current" aria-hidden>
+                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-ink text-paper transition-colors group-hover:bg-paper group-hover:text-ink" aria-hidden>
                       <ArrowUpRight className="h-5 w-5" />
                     </span>
                   </span>
