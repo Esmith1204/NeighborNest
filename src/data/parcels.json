@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "address": "1420 Larkspur Way, Fullerton, CA (Linda's home)",
+    "city": "Fullerton",
+    "zoning": "R1",
+    "lotSqFt": 7500,
+    "existingHomeSqFt": 2000,
+    "currentMortgageBalance": 420000,
+    "currentInterestRate": 4.1,
+    "estimatedAduRent": 2000
+  },
+  {
+    "id": 2,
+    "address": "812 Sycamore Court, Anaheim, CA",
+    "city": "Anaheim",
+    "zoning": "R2",
+    "lotSqFt": 6800,
+    "existingHomeSqFt": 2200,
+    "currentMortgageBalance": 385000,
+    "currentInterestRate": 3.6,
+    "estimatedAduRent": 2200
+  },
+  {
+    "id": 3,
+    "address": "47 Old Mill Lane, Orange, CA",
+    "city": "Orange",
+    "zoning": "Historic",
+    "lotSqFt": 5400,
+    "existingHomeSqFt": 1600,
+    "currentMortgageBalance": 310000,
+    "currentInterestRate": 4.4,
+    "estimatedAduRent": 1800
+  },
+  {
+    "id": 4,
+    "address": "2290 Marigold Street, Santa Ana, CA",
+    "city": "Santa Ana",
+    "zoning": "R1",
+    "lotSqFt": 3000,
+    "existingHomeSqFt": 1900,
+    "currentMortgageBalance": 340000,
+    "currentInterestRate": 5.1,
+    "estimatedAduRent": 1600
+  },
+  {
+    "id": 5,
+    "address": "603 Bayberry Drive, Garden Grove, CA",
+    "city": "Garden Grove",
+    "zoning": "Historic",
+    "lotSqFt": 2800,
+    "existingHomeSqFt": 1800,
+    "currentMortgageBalance": 275000,
+    "currentInterestRate": 4.8,
+    "estimatedAduRent": 1500
+  },
+  {
+    "id": 6,
+    "address": "1175 Juniper Avenue, Costa Mesa, CA",
+    "city": "Costa Mesa",
+    "zoning": "R2",
+    "lotSqFt": 2400,
+    "existingHomeSqFt": 1700,
+    "currentMortgageBalance": 295000,
+    "currentInterestRate": 3.9,
+    "estimatedAduRent": 1400
+  },
+  {
+    "id": 7,
+    "address": "38 Cobblestone Place, Tustin, CA",
+    "city": "Tustin",
+    "zoning": "Historic",
+    "lotSqFt": 2200,
+    "existingHomeSqFt": 1500,
+    "currentMortgageBalance": 205000,
+    "currentInterestRate": 5.6,
+    "estimatedAduRent": 1200
+  },
+  {
+    "id": 8,
+    "address": "3340 Willow Glen Road, Buena Park, CA",
+    "city": "Buena Park",
+    "zoning": "R1",
+    "lotSqFt": 4100,
+    "existingHomeSqFt": 2100,
+    "currentMortgageBalance": 245000,
+    "currentInterestRate": 3.8,
+    "estimatedAduRent": 1650
+  }
+]
