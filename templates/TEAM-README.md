@@ -74,7 +74,7 @@ each section.
 
 ![NeighborNest landing page](../docs/screenshot-landing.jpg)
 
-**Demo video:** [link, or "uploaded on the hub"]
+**Demo video:** [docs/demo-video.mp4](../docs/demo-video.mp4) (29 seconds: a screen recording of the live app, with captions)
 **Live demo:** <https://neighbornest-nine.vercel.app> (dashboard at
 <https://neighbornest-nine.vercel.app/dashboard>; live AI checked working on 2026-11-07)
 
